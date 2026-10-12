@@ -85,7 +85,7 @@ import {
 } from '../../../../../types';
 import { DurationRange } from '@elastic/eui/src/components/date_picker/types';
 import { DataStore } from '../../../../store/DataStore';
-import { AlertsPageResult } from '../../../../store/AlertsStore';
+import { AlertsPageResult, AlertsServerSideSupportResult } from '../../../../store/AlertsStore';
 import { ThreatIntelAlertsTable } from '../../components/ThreatIntelAlertsTable/ThreatIntelAlertsTable';
 import { PageHeader } from '../../../../components/PageHeader/PageHeader';
 // import { createBarChartWrapper } from '../../../../utils/chartUtils';
@@ -133,8 +133,9 @@ export interface AlertsState {
   selectedTabId: AlertTabId;
   // Whether the detection rule alerts are paged, sorted and filtered by the backend. Older
   // backends can't get the alerts of all detectors at once, then all alerts are loaded instead.
-  // While it's unknown whether the backend of the data source supports paging, e.g. because
-  // detecting it failed, all alerts are loaded and the support is detected again on the next load.
+  // If detecting whether the backend of the data source supports paging fails, e.g. because the
+  // cluster is overloaded, no alerts are loaded. An error with a retry button is shown instead and
+  // the support is detected again on the next load.
   alertsServerSide: boolean;
   // Whether loading all alerts stopped at the max result window for any detector
   alertsResultWindowReached: boolean;
@@ -152,6 +153,9 @@ export const alertsGroupByOptions = [
 const ALERTS_VIEW_CHART = 'alerts-view';
 
 const ALERTS_SEARCH_DEBOUNCE_MS = 300;
+
+// How long to wait before detecting the server side support once more after detecting it failed
+export const ALERTS_SUPPORT_DETECTION_RETRY_DELAY_MS = 500;
 
 const alertSeverityFilterOptions = Object.values(AlertSeverity).map((severity) => ({
   value: severity,
@@ -447,7 +451,10 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   /**
    * Gets one page of detection rule alerts from the backend and shows it in the table. The rows
    * of the previous page stay visible until the response arrives. Falls back to loading all alerts
-   * if the backend doesn't support getting pages of the alerts of all detectors.
+   * if the backend doesn't support getting pages of the alerts of all detectors. If the page
+   * request hits an older backend, e.g. a node that wasn't upgraded yet during a rolling upgrade,
+   * the support is detected and the page requested once more before falling back. A load makes at
+   * most two detections, each with at most one retry, and at most two page requests.
    */
   private getAlertsPage = async (
     query: AlertsTableQuery,
@@ -472,45 +479,58 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     const detectorId = this.props.match.params?.detectorId;
     this.setState({ loading: true });
 
+    const getPage = async (): Promise<AlertsPageResult> => {
+      try {
+        return await DataStore.alerts.getAlertsPage(
+          getAlertsPageParams(query, getDuration(dateTimeFilter), detectorId)
+        );
+      } catch (e: any) {
+        return { ok: false, error: e };
+      }
+    };
+
     // Older backends reject the paging, sorting, filter and search params, so only send them once
     // the backend is known to support them.
-    const detection = await DataStore.alerts.detectAlertsServerSideSupport();
-    if (requestId !== this.alertsRequestId) {
+    const detection = await this.detectAlertsServerSideSupport(requestId);
+    if (!detection) {
       // A newer request was made in the meantime.
       return;
     }
-
     if (detection.support !== 'supported') {
-      // Older backend, fall back to loading all alerts of every detector. If detecting the support
-      // failed, e.g. because the backend was unavailable for a moment, load all alerts this time
-      // and detect the support again on the next load. The detection error isn't shown, failing
-      // to load all alerts shows its own error.
-      this.loadAllDetectionRuleAlerts(detectorsRequest);
+      this.onAlertsServerSideNotSupported(detection, detectorsRequest);
       return;
     }
 
-    let result: AlertsPageResult;
-    try {
-      result = await DataStore.alerts.getAlertsPage(
-        getAlertsPageParams(query, getDuration(dateTimeFilter), detectorId)
-      );
-    } catch (e: any) {
-      result = { ok: false, error: e };
-    }
-
+    let result = await getPage();
     if (requestId !== this.alertsRequestId) {
       // A newer request was made in the meantime.
       return;
     }
 
-    if (!result.ok) {
-      if (result.unsupported) {
-        // The request hit an older backend, e.g. a node that wasn't upgraded yet during a rolling
-        // upgrade. Fall back to loading all alerts like for older backends.
-        this.loadAllDetectionRuleAlerts();
+    if (!result.ok && result.unsupported) {
+      // The request hit an older backend, e.g. a node that wasn't upgraded yet during a rolling
+      // upgrade. The next request might hit an upgraded node, so detect the support once more.
+      const redetection = await this.detectAlertsServerSideSupport(requestId);
+      if (!redetection) {
+        return;
+      }
+      if (redetection.support !== 'supported') {
+        this.onAlertsServerSideNotSupported(redetection);
         return;
       }
 
+      result = await getPage();
+      if (requestId !== this.alertsRequestId) {
+        return;
+      }
+      if (!result.ok && result.unsupported) {
+        // Hit an older node again, load all alerts this time.
+        this.loadAllDetectionRuleAlerts();
+        return;
+      }
+    }
+
+    if (!result.ok) {
       errorNotificationToast(notifications, 'retrieve', 'alerts', result.error);
       this.setState({ loading: false });
       return;
@@ -555,10 +575,81 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     });
   };
 
+  /**
+   * Detects whether the backend supports getting pages of the alerts of all detectors. If detecting
+   * fails, e.g. because the request timed out, it's detected once more after a moment. Returns
+   * undefined if a newer request was made in the meantime.
+   */
+  private async detectAlertsServerSideSupport(
+    requestId: number
+  ): Promise<AlertsServerSideSupportResult | undefined> {
+    let detection = await DataStore.alerts.detectAlertsServerSideSupport();
+    if (requestId !== this.alertsRequestId) {
+      return undefined;
+    }
+
+    if (detection.support === 'unknown') {
+      await new Promise((resolve) => setTimeout(resolve, ALERTS_SUPPORT_DETECTION_RETRY_DELAY_MS));
+      if (requestId !== this.alertsRequestId) {
+        return undefined;
+      }
+      detection = await DataStore.alerts.detectAlertsServerSideSupport();
+      if (requestId !== this.alertsRequestId) {
+        return undefined;
+      }
+    }
+
+    return detection;
+  }
+
+  private onAlertsServerSideNotSupported(
+    detection: AlertsServerSideSupportResult,
+    detectorsRequest?: Promise<ServerResponse<SearchDetectorsResponse>>
+  ) {
+    if (detection.support === 'unsupported') {
+      // Older backend, fall back to loading all alerts of every detector.
+      this.loadAllDetectionRuleAlerts(detectorsRequest);
+      return;
+    }
+
+    if (detection.support === 'unknown') {
+      // Detecting the support failed twice, e.g. because the cluster is overloaded. Loading all
+      // alerts would add even more load, so show the error and let the user retry. The rows shown
+      // so far stay, if any.
+      errorNotificationToast(this.props.notifications, 'retrieve', 'alerts', detection.error);
+      this.setState({
+        loading: false,
+        widgetEmptyMessage: (
+          <EuiEmptyPrompt
+            iconType="alert"
+            title={<h3>Unable to load alerts</h3>}
+            titleSize="xs"
+            body={
+              <EuiText size="s">
+                <p>The alerts could not be loaded. Try again in a moment.</p>
+              </EuiText>
+            }
+            actions={
+              <EuiSmallButton onClick={this.onRefresh} data-test-subj="alertsRetryButton">
+                Retry
+              </EuiSmallButton>
+            }
+            data-test-subj="alertsLoadErrorPrompt"
+          />
+        ),
+      });
+    }
+  }
+
   private loadAllDetectionRuleAlerts(
     detectorsRequest?: Promise<ServerResponse<SearchDetectorsResponse>>
   ) {
-    this.setState({ alertsServerSide: false });
+    // Start on the first page if the backend supports paging again on a later load, e.g. after
+    // the rolling upgrade finished.
+    this.setState({
+      alertsServerSide: false,
+      alertsTableQuery: { ...this.state.alertsTableQuery, pageIndex: 0 },
+    });
     this.getAlerts(this.createAbortSignal(), detectorsRequest);
   }
 

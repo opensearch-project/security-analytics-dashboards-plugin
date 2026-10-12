@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AlertsStore } from './AlertsStore';
+import { ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS, AlertsStore } from './AlertsStore';
 import notificationsStartMock from '../../test/mocks/services/notifications/NotificationsStart.mock';
 import { MAX_ALERTS_RESULT_WINDOW } from '../utils/constants';
 import { dataSourceInfo } from '../services/utils/constants';
@@ -321,7 +321,7 @@ describe('AlertsStore.getAlertsPage', () => {
       },
     ],
   ])(
-    'knows the data source as unsupported after an error of an older backend %s',
+    'returns unsupported and detects the support again after an error of an older backend %s',
     async (_, error) => {
       let resolve: (res: any) => void = () => {};
       const getAlerts = jest
@@ -340,14 +340,39 @@ describe('AlertsStore.getAlertsPage', () => {
       resolve({ ok: false, error });
 
       expect(await page).toEqual({ ok: false, error, unsupported: true });
-      expect(store.getAlertsServerSideSupport()).toBe('unknown');
       dataSourceInfo.activeDataSource = { id: 'upgrading-cluster' };
-      expect(store.getAlertsServerSideSupport()).toBe('unsupported');
-      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+      // A single request that hit an older node doesn't make the data source unsupported.
+      expect(store.getAlertsServerSideSupport()).toBe('unknown');
       expect(getAlerts).toHaveBeenCalledTimes(2);
       expect(addDanger).not.toHaveBeenCalled();
+
+      // The next detection asks the backend again.
+      getAlerts.mockResolvedValue({ ok: true, response: { alerts: [], total_alerts: 5 } });
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+      expect(getAlerts).toHaveBeenCalledTimes(3);
+      expect(getAlerts).toHaveBeenLastCalledWith({
+        startIndex: 0,
+        size: 0,
+        dataSource: { id: 'upgrading-cluster' },
+      });
     }
   );
+
+  it('does not clear the support of other data sources after an error of an older backend', async () => {
+    const getAlerts = jest
+      .fn()
+      .mockResolvedValueOnce({ ok: true, response: { alerts: [], total_alerts: 5 } })
+      .mockResolvedValueOnce({ ok: false, error: OLD_BACKEND_ERROR });
+    const store = createStore(getAlerts);
+    dataSourceInfo.activeDataSource = { id: 'other-cluster' };
+    await store.detectAlertsServerSideSupport();
+
+    dataSourceInfo.activeDataSource = { id: 'upgrading-cluster' };
+    await store.getAlertsPage({ size: 10, dataSource: { id: 'upgrading-cluster' } });
+
+    dataSourceInfo.activeDataSource = { id: 'other-cluster' };
+    expect(store.getAlertsServerSideSupport()).toBe('supported');
+  });
 });
 
 describe('AlertsStore.detectAlertsServerSideSupport', () => {
@@ -421,6 +446,73 @@ describe('AlertsStore.detectAlertsServerSideSupport', () => {
     expect(store.getAlertsServerSideSupport()).toBe('unknown');
     dataSourceInfo.activeDataSource = { id: 'old-cluster' };
     expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+  });
+
+  describe('with fake timers', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('knows a data source as unsupported until it expires and then detects it again', async () => {
+      const getAlerts = jest
+        .fn()
+        .mockResolvedValueOnce({ ok: false, error: OLD_BACKEND_ERROR })
+        .mockImplementation(ok);
+      const store = createStore(getAlerts);
+      dataSourceInfo.activeDataSource = { id: 'old-cluster' };
+
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+      jest.advanceTimersByTime(ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS - 1);
+      expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+      expect(getAlerts).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(1);
+      expect(store.getAlertsServerSideSupport()).toBe('unknown');
+      // The backend got upgraded meanwhile.
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+      expect(getAlerts).toHaveBeenCalledTimes(2);
+    });
+
+    it('detects an expired unsupported data source again even without asking for the support first', async () => {
+      const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
+      const store = createStore(getAlerts);
+
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+      jest.advanceTimersByTime(ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS);
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+      expect(getAlerts).toHaveBeenCalledTimes(2);
+      // Known as unsupported for the full time again
+      jest.advanceTimersByTime(ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS - 1);
+      expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+    });
+
+    it('keeps knowing a data source as supported', async () => {
+      const getAlerts = jest.fn(ok);
+      const store = createStore(getAlerts);
+
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+      jest.advanceTimersByTime(ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS * 100);
+      expect(store.getAlertsServerSideSupport()).toBe('supported');
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+      expect(getAlerts).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('uses the given clock for when an unsupported data source expires', async () => {
+    let now = 1000;
+    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
+    const store = new AlertsStore({ getAlerts } as any, notificationsStartMock, () => now);
+
+    await store.detectAlertsServerSideSupport();
+    now += ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS - 1;
+    expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+    now += 1;
+    expect(store.getAlertsServerSideSupport()).toBe('unknown');
   });
 
   it.each([

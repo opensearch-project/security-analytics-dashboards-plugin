@@ -13,7 +13,8 @@ import { dataSourceInfo } from '../services/utils/constants';
 export type AlertsPageResult =
   | { ok: true; alerts: AlertResponse[]; total: number }
   // unsupported: the backend rejected the request as an older backend would, e.g. a node that
-  // wasn't upgraded yet during a rolling upgrade. The data source is then known as unsupported.
+  // wasn't upgraded yet during a rolling upgrade. The support of the data source is then unknown
+  // again, so it's detected anew.
   | { ok: false; error: any; unsupported?: boolean };
 
 export interface AlertsByDetectorResult {
@@ -30,6 +31,15 @@ export type AlertsServerSideSupport = 'unknown' | 'supported' | 'unsupported';
 
 export type AlertsServerSideSupportResult =
   { support: 'supported' | 'unsupported' } | { support: 'unknown'; error: any };
+
+/**
+ * How long a data source stays known as unsupported after detecting it. It's detected again after
+ * that, e.g. because its backend got upgraded meanwhile.
+ */
+export const ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS = 5 * 60 * 1000;
+
+type KnownAlertsServerSideSupport =
+  { support: 'supported' } | { support: 'unsupported'; expiresAt: number };
 
 const SERVER_SIDE_UNSUPPORTED_ERRORS = [
   // Older backends require a detector id or type when getting alerts.
@@ -52,7 +62,7 @@ export const isAlertsServerSideUnsupportedError = (error: any) => {
 
 export class AlertsStore {
   // Known server side support per data source id
-  private readonly serverSideSupport = new Map<string, 'supported' | 'unsupported'>();
+  private readonly serverSideSupport = new Map<string, KnownAlertsServerSideSupport>();
   // Pending support detection per data source id
   private readonly serverSideSupportDetections = new Map<
     string,
@@ -61,7 +71,9 @@ export class AlertsStore {
 
   constructor(
     private readonly service: AlertsService,
-    private readonly notifications: NotificationsStart
+    private readonly notifications: NotificationsStart,
+    // Current time in milliseconds, for when a known unsupported data source expires
+    private readonly now: () => number = () => Date.now()
   ) {}
 
   /**
@@ -69,19 +81,29 @@ export class AlertsStore {
    * of the active data source, as far as known without making a request.
    */
   public getAlertsServerSideSupport(): AlertsServerSideSupport {
-    return this.serverSideSupport.get(dataSourceInfo.activeDataSource.id) ?? 'unknown';
+    return this.getKnownSupport(dataSourceInfo.activeDataSource.id) ?? 'unknown';
+  }
+
+  private getKnownSupport(dataSourceId: string): 'supported' | 'unsupported' | undefined {
+    const known = this.serverSideSupport.get(dataSourceId);
+    if (known?.support === 'unsupported' && this.now() >= known.expiresAt) {
+      this.serverSideSupport.delete(dataSourceId);
+      return undefined;
+    }
+    return known?.support;
   }
 
   /**
-   * Detects once per data source whether its backend supports paging, sorting, filtering and
+   * Detects whether the backend of the active data source supports paging, sorting, filtering and
    * searching the alerts of all detectors. While the support is unknown a single request for the
    * number of alerts of all detectors is made, without any of the params older backends reject.
-   * Older backends reject it because it has no detector. Other errors leave the support unknown,
-   * so it's detected again next time. Errors are returned, not shown.
+   * Older backends reject it because it has no detector. A supported data source stays known as
+   * supported, an unsupported one for ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS. Other errors leave
+   * the support unknown, so it's detected again next time. Errors are returned, not shown.
    */
   public detectAlertsServerSideSupport(): Promise<AlertsServerSideSupportResult> {
     const dataSourceId = dataSourceInfo.activeDataSource.id;
-    const support = this.serverSideSupport.get(dataSourceId);
+    const support = this.getKnownSupport(dataSourceId);
     if (support) {
       return Promise.resolve({ support });
     }
@@ -117,8 +139,13 @@ export class AlertsStore {
       result = { support: 'unknown', error };
     }
 
-    if (result.support !== 'unknown') {
-      this.serverSideSupport.set(dataSourceId, result.support);
+    if (result.support === 'supported') {
+      this.serverSideSupport.set(dataSourceId, { support: 'supported' });
+    } else if (result.support === 'unsupported') {
+      this.serverSideSupport.set(dataSourceId, {
+        support: 'unsupported',
+        expiresAt: this.now() + ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS,
+      });
     }
     this.serverSideSupportDetections.delete(dataSourceId);
 
@@ -129,7 +156,9 @@ export class AlertsStore {
    * Gets a single page of alerts with exactly one request. Errors are returned, not shown. Only use
    * it with params other than a detector after detectAlertsServerSideSupport found the backend to
    * support them. If the backend rejects the request as an older backend would, e.g. because it
-   * hit a node that wasn't upgraded yet, the data source is known as unsupported from then on.
+   * hit a node that wasn't upgraded yet during a rolling upgrade, the result is unsupported and the
+   * support of the data source is unknown again. A single request doesn't tell whether the whole
+   * backend is older, so the support is detected again instead of known as unsupported.
    */
   public async getAlertsPage(params: GetAlertsParams): Promise<AlertsPageResult> {
     const dataSourceId = params.dataSource?.id || dataSourceInfo.activeDataSource.id;
@@ -141,7 +170,7 @@ export class AlertsStore {
     }
 
     if (isAlertsServerSideUnsupportedError(res.error)) {
-      this.serverSideSupport.set(dataSourceId, 'unsupported');
+      this.serverSideSupport.delete(dataSourceId);
       return { ok: false, error: res.error, unsupported: true };
     }
 

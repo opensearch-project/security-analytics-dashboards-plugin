@@ -5,7 +5,10 @@
 
 import React from 'react';
 import moment from 'moment';
-import Alerts, { Alerts as AlertsComponent } from './Alerts';
+import Alerts, {
+  Alerts as AlertsComponent,
+  ALERTS_SUPPORT_DETECTION_RETRY_DELAY_MS,
+} from './Alerts';
 import alertsMock from '../../../../../test/mocks/Alerts/Alerts.mock';
 import { MemoryRouter, Route, RouteComponentProps } from 'react-router-dom';
 import { setupCoreStart } from '../../../../../test/utils/helpers';
@@ -13,7 +16,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import detectorResponseMock from '../../../../../test/mocks/Detectors/containers/Detectors/DetectorResponse.mock';
 import notificationsStartMock from '../../../../../test/mocks/services/notifications/NotificationsStart.mock';
 import { DataStore } from '../../../../store/DataStore';
-import { AlertsStore } from '../../../../store/AlertsStore';
+import { ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS, AlertsStore } from '../../../../store/AlertsStore';
 import { ROUTES } from '../../../../utils/constants';
 import { dataSourceInfo } from '../../../../services/utils/constants';
 
@@ -69,6 +72,11 @@ const okAlerts = (alerts: any[], total = alerts.length) => ({
 });
 
 const isAllDetectorsRequest = (params: any) => !params.detector_id && !params.detectorType;
+
+// Detecting the server side support is retried after a delay, wait for longer than that.
+const DETECTION_RETRY_TIMEOUT = { timeout: ALERTS_SUPPORT_DETECTION_RETRY_DELAY_MS + 2000 };
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('<Alerts /> spec', () => {
   const originalAlertsStore = DataStore.alerts;
@@ -777,7 +785,7 @@ describe('<Alerts /> spec', () => {
         'request [/_plugins/_security_analytics/alerts] contains Unrecognized Parameters: [alertStates], [sortString]',
       ],
     ])(
-      'falls back to loading all alerts without an error when a page request hits a node that %s',
+      'detects the support again and falls back to loading all alerts without an error when a page request and the detection hit a node that %s',
       async (_, error) => {
         await renderWithAlerts();
         expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
@@ -794,17 +802,21 @@ describe('<Alerts /> spec', () => {
         await screen.findByText('trigger detector_2-1');
         expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
         expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
-        expect(getAlerts.mock.calls.slice(1).map(([params]) => params.detector_id)).toEqual([
-          undefined,
-          'detector_1',
-          'detector_2',
+        // The page request, the detection, then the alerts of every detector
+        expect(
+          getAlerts.mock.calls.slice(1).map(([params]) => [params.detector_id, params.size])
+        ).toEqual([
+          [undefined, 10],
+          [undefined, 0],
+          ['detector_1', 10000],
+          ['detector_2', 10000],
         ]);
         expect(DataStore.alerts.getAlertsServerSideSupport()).toBe('unsupported');
 
-        // Later loads don't get pages of the alerts of all detectors again.
+        // Later loads don't get pages of the alerts of all detectors again for a while.
         fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
-        await waitForAlertsRequest(6);
-        expect(getAlerts.mock.calls.slice(4).map(([params]) => params.detector_id)).toEqual([
+        await waitForAlertsRequest(7);
+        expect(getAlerts.mock.calls.slice(5).map(([params]) => params.detector_id)).toEqual([
           'detector_1',
           'detector_2',
         ]);
@@ -1073,7 +1085,7 @@ describe('<Alerts /> spec', () => {
       expect(getAlerts.mock.calls[1][0]).toMatchObject({ startIndex: 0, size: 10 });
     });
 
-    it('loads all alerts after other errors and detects the support again on the next load', async () => {
+    it('does not load all alerts if detecting fails twice and detects again on the next load', async () => {
       getAlerts.mockImplementation((params) =>
         Promise.resolve(
           params.detector_id
@@ -1083,16 +1095,19 @@ describe('<Alerts /> spec', () => {
       );
       renderAlerts();
 
-      await screen.findByText('trigger detector_2-1');
-      expect(screen.getByText('trigger detector_1-1')).toBeInTheDocument();
-      expect(getAlerts.mock.calls.map(([params]) => params.detector_id)).toEqual([
-        undefined,
-        'detector_1',
-        'detector_2',
+      await waitFor(
+        () =>
+          expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
+            expect.objectContaining({ text: 'Service unavailable' })
+          ),
+        DETECTION_RETRY_TIMEOUT
+      );
+      expect(await screen.findByTestId('alertsLoadErrorPrompt')).toBeInTheDocument();
+      // Only the detection and its retry, no alerts of any detector
+      expect(getAlerts.mock.calls.map(([params]) => params)).toEqual([
+        { startIndex: 0, size: 0, dataSource: { id: '' } },
+        { startIndex: 0, size: 0, dataSource: { id: '' } },
       ]);
-      // The alerts loaded, so the detection error isn't shown.
-      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
-      expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
       expect(DataStore.alerts.getAlertsServerSideSupport()).toBe('unknown');
 
       getAlerts.mockImplementation((params) =>
@@ -1100,33 +1115,11 @@ describe('<Alerts /> spec', () => {
       );
       fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
 
-      await screen.findByTestId('alertsSearchField');
       await screen.findByText('Alerts (100)');
-      expect(probeCount()).toBe(2);
-      expect(getAlerts.mock.calls[4][0]).toMatchObject({ startIndex: 0, size: 10 });
-      expect(getAlerts).toHaveBeenCalledTimes(5);
-    });
-
-    it('shows the error if loading all alerts after other errors fails too', async () => {
-      getAlerts.mockResolvedValue({ ok: false, error: 'Service unavailable' });
-      renderAlerts();
-
-      await waitFor(() =>
-        expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
-          expect.objectContaining({ text: 'Service unavailable' })
-        )
-      );
-      await waitForAlertsRequest(3);
-      expect(getAlerts.mock.calls.map(([params]) => params.detector_id)).toEqual([
-        undefined,
-        'detector_1',
-        'detector_2',
-      ]);
-      expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
-
-      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
-      await waitForAlertsRequest(6);
-      expect(probeCount()).toBe(2);
+      expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+      expect(probeCount()).toBe(3);
+      expect(getAlerts.mock.calls[3][0]).toMatchObject({ startIndex: 0, size: 10 });
+      expect(getAlerts).toHaveBeenCalledTimes(4);
     });
 
     it('resets the page and detects the support per data source when it changes', async () => {
@@ -1160,15 +1153,22 @@ describe('<Alerts /> spec', () => {
 
       // Other errors keep the current mode.
       setDataSource({ id: 'flaky-cluster' });
-      await waitFor(() =>
-        expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
-          expect.objectContaining({ text: 'Service unavailable' })
-        )
+      await waitFor(
+        () =>
+          expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
+            expect.objectContaining({ text: 'Service unavailable' })
+          ),
+        DETECTION_RETRY_TIMEOUT
       );
       // The alerts of the previous data source are not shown for the new one.
       expect(screen.queryByText('trigger detector_2-old-0')).not.toBeInTheDocument();
       expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
-      expect(probeCount()).toBe(3);
+      expect(screen.getByTestId('alertsLoadErrorPrompt')).toBeInTheDocument();
+      // The detection and its retry
+      expect(probeCount()).toBe(4);
+      expect(
+        getAlerts.mock.calls.filter(([params]) => params.dataSource?.id === 'flaky-cluster')
+      ).toHaveLength(2);
 
       const callsBefore = getAlerts.mock.calls.length;
       setDataSource({ id: 'new-cluster' });
@@ -1178,12 +1178,221 @@ describe('<Alerts /> spec', () => {
       expect(getAlerts.mock.calls.slice(callsBefore).map(([params]) => params)).toEqual([
         expect.objectContaining({ startIndex: 0, size: 10 }),
       ]);
-      expect(probeCount()).toBe(3);
+      expect(probeCount()).toBe(4);
       getAlerts.mock.calls
         .filter(([params]) => (params.dataSource?.id ?? '') === oldBackendId || params.detector_id)
         .forEach(([params]) =>
           NEW_PARAMS.forEach((param) => expect(params[param]).toBeUndefined())
         );
+    });
+  });
+
+  describe('failures while detecting the server side support', () => {
+    let now: number;
+
+    const isProbe = (params: any) => isAllDetectorsRequest(params) && params.size === 0;
+
+    // The kind of every alerts request so far
+    const requests = () =>
+      getAlerts.mock.calls.map(([params]) => {
+        if (isProbe(params)) {
+          return 'probe';
+        }
+        return isAllDetectorsRequest(params)
+          ? `page ${params.startIndex}`
+          : `${params.detector_id} ${params.size}`;
+      });
+
+    const supported = okAlerts([], 100);
+    const unavailable = { ok: false, error: 'Service unavailable' };
+    const olderNode = { ok: false, error: OLD_BACKEND_ERROR };
+    const pageOf100 = (params: any) =>
+      okAlerts(createAlerts('detector_1', params.size, params.startIndex), 100);
+
+    // Responds to the detections and to the page requests with the given responses in turn, the
+    // last one repeats. A response can be a function of the request params.
+    const mockBackend = ({ probes, pages = [pageOf100] }: { probes: any[]; pages?: any[] }) => {
+      let probeIndex = 0;
+      let pageIndex = 0;
+      const respond = (responses: any[], index: number, params: any) => {
+        const response = responses[Math.min(index, responses.length - 1)];
+        return Promise.resolve(typeof response === 'function' ? response(params) : response);
+      };
+      getAlerts.mockImplementation((params) => {
+        if (isProbe(params)) {
+          return respond(probes, probeIndex++, params);
+        }
+        if (isAllDetectorsRequest(params)) {
+          return respond(pages, pageIndex++, params);
+        }
+        return Promise.resolve(okAlerts(createAlerts(params.detector_id, 2)));
+      });
+    };
+
+    const refresh = () => fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+
+    const waitForErrorToast = () =>
+      waitFor(
+        () =>
+          expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
+            expect.objectContaining({ text: 'Service unavailable' })
+          ),
+        DETECTION_RETRY_TIMEOUT
+      );
+
+    beforeEach(() => {
+      now = 0;
+      DataStore.alerts = new AlertsStore(
+        { getAlerts, getThreatIntelAlerts } as any,
+        notificationsStartMock,
+        () => now
+      );
+      jest.spyOn(moment(), 'isBetween').mockReturnValue(true);
+    });
+
+    it.each([
+      ['an error response', unavailable],
+      ['a failed request', () => Promise.reject('Service unavailable')],
+    ])(
+      'detects once more after a moment if detecting fails with %s and gets the page',
+      async (_, failure) => {
+        mockBackend({ probes: [failure, supported] });
+        renderAlerts();
+
+        await waitForAlertsRequest(1);
+        await sleep(ALERTS_SUPPORT_DETECTION_RETRY_DELAY_MS / 2);
+        expect(getAlerts).toHaveBeenCalledTimes(1);
+
+        await screen.findByText('trigger detector_1-0', undefined, DETECTION_RETRY_TIMEOUT);
+        expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+        expect(screen.getByText('Alerts (100)')).toBeInTheDocument();
+        expect(requests()).toEqual(['probe', 'probe', 'page 0']);
+        expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+      }
+    );
+
+    it('shows an error with a retry button instead of loading all alerts if detecting fails twice', async () => {
+      mockBackend({ probes: [unavailable] });
+      renderAlerts();
+
+      await waitForErrorToast();
+      expect(await screen.findByTestId('alertsLoadErrorPrompt')).toBeInTheDocument();
+      expect(screen.getByText('Unable to load alerts')).toBeInTheDocument();
+      await sleep(ALERTS_SUPPORT_DETECTION_RETRY_DELAY_MS + 100);
+      expect(requests()).toEqual(['probe', 'probe']);
+      expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledTimes(1);
+
+      mockBackend({ probes: [supported] });
+      fireEvent.click(screen.getByTestId('alertsRetryButton'));
+
+      await screen.findByText('trigger detector_1-0');
+      expect(screen.queryByTestId('alertsLoadErrorPrompt')).not.toBeInTheDocument();
+      expect(requests()).toEqual(['probe', 'probe', 'probe', 'page 0']);
+    });
+
+    it('retries the page once if it hits an older node and the detection finds support', async () => {
+      mockBackend({ probes: [supported], pages: [pageOf100, olderNode, pageOf100] });
+      renderAlerts();
+      await screen.findByText('trigger detector_1-0');
+
+      fireEvent.click(screen.getByTestId('pagination-button-1'));
+
+      await screen.findByText('trigger detector_1-10');
+      expect(screen.getByTestId('alertsSearchField')).toBeInTheDocument();
+      expect(requests()).toEqual(['probe', 'page 0', 'page 10', 'probe', 'page 10']);
+      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+      expect(DataStore.alerts.getAlertsServerSideSupport()).toBe('supported');
+    });
+
+    it('falls back for the load if the retried page hits an older node again', async () => {
+      mockBackend({ probes: [supported], pages: [pageOf100, olderNode] });
+      renderAlerts();
+      await screen.findByText('trigger detector_1-0');
+
+      fireEvent.click(screen.getByTestId('pagination-button-1'));
+
+      await screen.findByText('trigger detector_2-1');
+      await sleep(100);
+      expect(requests()).toEqual([
+        'probe',
+        'page 0',
+        'page 10',
+        'probe',
+        'page 10',
+        'detector_1 10000',
+        'detector_2 10000',
+      ]);
+      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+    });
+
+    it('falls back if the page and the detection hit an older node and detects again after a while', async () => {
+      mockBackend({ probes: [supported, olderNode], pages: [pageOf100, olderNode] });
+      renderAlerts();
+      await screen.findByText('trigger detector_1-0');
+
+      fireEvent.click(screen.getByTestId('pagination-button-1'));
+
+      await screen.findByText('trigger detector_2-1');
+      expect(screen.queryByTestId('alertsSearchField')).not.toBeInTheDocument();
+      expect(requests()).toEqual([
+        'probe',
+        'page 0',
+        'page 10',
+        'probe',
+        'detector_1 10000',
+        'detector_2 10000',
+      ]);
+      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+
+      // Known as unsupported for a while
+      now += ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS - 1;
+      refresh();
+      await waitForAlertsRequest(8);
+      expect(requests().slice(6)).toEqual(['detector_1 10000', 'detector_2 10000']);
+
+      // Then detected again, the backend got upgraded meanwhile.
+      now += 1;
+      mockBackend({ probes: [supported] });
+      refresh();
+
+      await screen.findByTestId('alertsSearchField');
+      await screen.findByText('Alerts (100)');
+      expect(requests().slice(8)).toEqual(['probe', 'page 0']);
+    });
+
+    it('keeps the rows and shows an error if the page hits an older node and detecting fails twice', async () => {
+      mockBackend({ probes: [supported, unavailable], pages: [pageOf100, olderNode] });
+      renderAlerts();
+      await screen.findByText('trigger detector_1-0');
+
+      refresh();
+
+      await waitForErrorToast();
+      await sleep(ALERTS_SUPPORT_DETECTION_RETRY_DELAY_MS + 100);
+      expect(requests()).toEqual(['probe', 'page 0', 'page 0', 'probe', 'probe']);
+      expect(screen.getByText('trigger detector_1-0')).toBeInTheDocument();
+      expect(screen.queryByTestId('alertsLoadErrorPrompt')).not.toBeInTheDocument();
+      expect(DataStore.alerts.getAlertsServerSideSupport()).toBe('unknown');
+
+      // Refreshing detects again.
+      mockBackend({ probes: [supported] });
+      refresh();
+
+      await waitForAlertsRequest(7);
+      expect(requests().slice(5)).toEqual(['probe', 'page 0']);
+      expect(screen.getByText('trigger detector_1-0')).toBeInTheDocument();
+    });
+
+    it('does not detect again after leaving the page while waiting to retry', async () => {
+      mockBackend({ probes: [unavailable] });
+      const { unmount } = renderAlerts();
+      await waitForAlertsRequest(1);
+
+      unmount();
+      await sleep(ALERTS_SUPPORT_DETECTION_RETRY_DELAY_MS + 100);
+
+      expect(requests()).toEqual(['probe']);
+      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
     });
   });
 });
