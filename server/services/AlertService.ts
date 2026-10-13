@@ -43,6 +43,9 @@ export default class AlertService extends MDSEnabledClientService {
         searchString,
         severityLevels,
         alertStates,
+        paging,
+        searchAfter,
+        direction,
       } = request.query;
       const params: GetAlertsParams = {
         sortOrder,
@@ -55,6 +58,18 @@ export default class AlertService extends MDSEnabledClientService {
         severityLevels,
         alertStates,
       };
+
+      // Cursor paging params are only sent when used, so that older backends, which reject them,
+      // keep working for all other requests.
+      if (paging) {
+        params.paging = paging;
+        if (searchAfter) {
+          params.searchAfter = searchAfter;
+        }
+        if (direction) {
+          params.direction = direction;
+        }
+      }
 
       // When neither detector_id nor detectorType is given the backend returns the alerts of all
       // detectors the user has access to. detector_id takes precedence over detectorType.

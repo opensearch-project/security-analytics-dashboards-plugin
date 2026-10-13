@@ -43,6 +43,15 @@ export function addAlertsMethods(securityAnalytics: any, createAction: any): voi
         alertStates: {
           type: 'string',
         },
+        paging: {
+          type: 'string',
+        },
+        searchAfter: {
+          type: 'string',
+        },
+        direction: {
+          type: 'string',
+        },
       },
     },
     needBody: false,

@@ -55,6 +55,47 @@ describe('AlertService.getAlerts', () => {
     expect(res.body).toEqual({ ok: true, response: { alerts: [], total_alerts: 0 } });
   });
 
+  it('passes the cursor paging params to the backend', async () => {
+    const { getAlerts, callAsCurrentUser } = createService();
+
+    await getAlerts({
+      size: 100,
+      sortString: 'severity',
+      paging: 'cursor',
+      searchAfter: 'abc_-',
+      direction: 'prev',
+    });
+    await getAlerts({ size: 0, startIndex: 0, paging: 'cursor' });
+
+    expect(callAsCurrentUser.mock.calls[0]).toEqual([
+      CLIENT_ALERTS_METHODS.GET_ALERTS,
+      expect.objectContaining({
+        size: 100,
+        sortString: 'severity',
+        paging: 'cursor',
+        searchAfter: 'abc_-',
+        direction: 'prev',
+      }),
+    ]);
+    expect(callAsCurrentUser.mock.calls[0][1].startIndex).toBeUndefined();
+    expect(callAsCurrentUser.mock.calls[1][1]).toEqual(
+      expect.objectContaining({ size: 0, startIndex: 0, paging: 'cursor' })
+    );
+    expect(callAsCurrentUser.mock.calls[1][1]).not.toHaveProperty('searchAfter');
+    expect(callAsCurrentUser.mock.calls[1][1]).not.toHaveProperty('direction');
+  });
+
+  it('does not pass cursor paging params without paging', async () => {
+    const { getAlerts, callAsCurrentUser } = createService();
+
+    await getAlerts({ size: 10, startIndex: 0 });
+
+    const params = callAsCurrentUser.mock.calls[0][1];
+    expect(params).not.toHaveProperty('paging');
+    expect(params).not.toHaveProperty('searchAfter');
+    expect(params).not.toHaveProperty('direction');
+  });
+
   it('passes detectorType when no detector_id is given', async () => {
     const { getAlerts, callAsCurrentUser } = createService();
 

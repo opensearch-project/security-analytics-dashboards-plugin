@@ -9,6 +9,18 @@ import { ALERTS_SEARCH_STRING_MAX_LENGTH } from '../../../../common/constants';
 
 export const ALERTS_PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
+/**
+ * A page beyond the numbered pages, got with the cursor of a page in cursor paging.
+ */
+export interface AlertsCursorPosition {
+  // The cursor of the alert the page is after (next) or before (prev)
+  searchAfter: string;
+  direction: 'next' | 'prev';
+  // Position of the first alert of the page among all matching alerts. Alerts may change between
+  // pages, so it's only as exact as the alerts stay the same.
+  offset: number;
+}
+
 export interface AlertsTableQuery {
   pageIndex: number;
   pageSize: number;
@@ -17,6 +29,9 @@ export interface AlertsTableQuery {
   severities: string[];
   statuses: string[];
   search: string;
+  // Set for pages beyond the numbered pages, see AlertsCursorPosition. pageIndex is then the last
+  // numbered page.
+  cursor?: AlertsCursorPosition;
 }
 
 export const DEFAULT_ALERTS_TABLE_QUERY: AlertsTableQuery = {
@@ -75,13 +90,24 @@ export const getAlertsSearchString = (input: string): string => {
 };
 
 /**
+ * Number of alerts on the numbered pages of the given size: they end within the max result window.
+ * The alerts after them are paged with cursors, if the backend supports it.
+ */
+export const getNumberedAlertsLimit = (pageSize: number) =>
+  pageSize > 0
+    ? Math.floor(MAX_ALERTS_RESULT_WINDOW / pageSize) * pageSize
+    : MAX_ALERTS_RESULT_WINDOW;
+
+/**
  * Builds the get alerts params for one page of the detection rule alerts table. Requests never go
- * past the max result window of the backend.
+ * past the max result window of the backend. With cursor paging, pages beyond the numbered pages
+ * are got with the cursor of the query, the numbered pages with startIndex as before.
  */
 export const getAlertsPageParams = (
   query: AlertsTableQuery,
   duration?: Duration,
-  detectorId?: string
+  detectorId?: string,
+  cursorPaging: boolean = false
 ): GetAlertsParams => {
   const startIndex = query.pageIndex * query.pageSize;
   const size = Math.max(0, Math.min(query.pageSize, MAX_ALERTS_RESULT_WINDOW - startIndex));
@@ -109,6 +135,16 @@ export const getAlertsPageParams = (
 
   if (detectorId) {
     params.detector_id = detectorId;
+  }
+
+  if (cursorPaging) {
+    params.paging = 'cursor';
+    if (query.cursor) {
+      delete params.startIndex;
+      params.size = query.pageSize;
+      params.searchAfter = query.cursor.searchAfter;
+      params.direction = query.cursor.direction;
+    }
   }
 
   return params;

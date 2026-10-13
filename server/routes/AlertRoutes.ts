@@ -9,6 +9,8 @@ import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 import { createQueryValidationSchema } from '../utils/helpers';
 import {
+  ALERTS_CURSOR_MAX_LENGTH,
+  ALERTS_CURSOR_PATTERN,
   ALERTS_SEARCH_STRING_MAX_LENGTH,
   ALERTS_SEARCH_STRING_PATTERN,
   ALERTS_SORT_FIELDS,
@@ -68,6 +70,20 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
           ),
           severityLevels: schema.maybe(schema.string({ validate: validateSeverityLevels })),
           alertStates: schema.maybe(schema.string({ validate: validateAlertStates })),
+          // Cursor paging. The backend validates the cursor and the page size (at most 1000 with a
+          // cursor).
+          paging: schema.maybe(schema.literal('cursor')),
+          searchAfter: schema.maybe(
+            schema.string({
+              minLength: 1,
+              maxLength: ALERTS_CURSOR_MAX_LENGTH,
+              validate: (value) =>
+                ALERTS_CURSOR_PATTERN.test(value)
+                  ? undefined
+                  : 'must only contain letters, digits, _ and -',
+            })
+          ),
+          direction: schema.maybe(schema.oneOf([schema.literal('next'), schema.literal('prev')])),
         }),
       },
     },

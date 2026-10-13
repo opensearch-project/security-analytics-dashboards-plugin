@@ -280,7 +280,7 @@ describe('AlertsStore.getAlertsPage', () => {
 
     expect(getAlerts).toHaveBeenCalledTimes(1);
     expect(getAlerts).toHaveBeenCalledWith(params);
-    expect(result).toEqual({ ok: true, alerts, total: 10000 });
+    expect(result).toEqual({ ok: true, alerts, total: 10000, nextCursor: null, prevCursor: null });
   });
 
   it('returns errors without showing them', async () => {
@@ -357,6 +357,7 @@ describe('AlertsStore.getAlertsPage', () => {
       expect(getAlerts).toHaveBeenLastCalledWith({
         startIndex: 0,
         size: 0,
+        paging: 'cursor',
         dataSource: { id: 'upgrading-cluster' },
       });
     }
@@ -411,21 +412,24 @@ describe('AlertsStore.detectAlertsServerSideSupport', () => {
 
   const ok = () => Promise.resolve({ ok: true, response: { alerts: [], total_alerts: 5 } });
 
-  it('asks for the number of alerts of all detectors without other params', async () => {
+  it('asks for the number of alerts of all detectors in cursor paging without other params', async () => {
     const getAlerts = jest.fn(ok);
     const store = createStore(getAlerts);
     dataSourceInfo.activeDataSource = { id: 'cluster' };
 
     expect(store.getAlertsServerSideSupport()).toBe('unknown');
+    expect(store.getAlertsCursorSupport()).toBe(false);
     expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
 
     expect(getAlerts).toHaveBeenCalledTimes(1);
     expect(getAlerts).toHaveBeenCalledWith({
       startIndex: 0,
       size: 0,
+      paging: 'cursor',
       dataSource: { id: 'cluster' },
     });
     expect(store.getAlertsServerSideSupport()).toBe('supported');
+    expect(store.getAlertsCursorSupport()).toBe(true);
   });
 
   it('detects the support once per data source', async () => {
@@ -561,6 +565,181 @@ describe('AlertsStore.detectAlertsServerSideSupport', () => {
   });
 });
 
+describe('AlertsStore cursor paging support', () => {
+  const OLD_BACKEND_ERROR =
+    '[action_request_validation_exception] Validation Failed: 1: At least one of detector type or detector id needs to be passed;';
+  const NO_CURSOR_ERROR =
+    '[illegal_argument_exception] request [/_plugins/_security_analytics/alerts] contains unrecognized parameter: [paging]';
+  const NO_CURSOR_PERMISSION_ERROR =
+    '[security_exception] no permissions for [cluster:admin/opensearch/securityanalytics/alerts/get_page] and User [name=reader, backend_roles=[], requestedTenant=null]';
+
+  const ok = () => Promise.resolve({ ok: true, response: { alerts: [], total_alerts: 5 } });
+
+  afterEach(() => {
+    dataSourceInfo.activeDataSource = { id: '' };
+  });
+
+  it.each([
+    ['does not know the cursor paging params', NO_CURSOR_ERROR],
+    [
+      'does not know the cursor paging params and suggests others',
+      'request [/_plugins/_security_analytics/alerts] contains unrecognized parameters: [paging] -> did you mean [page]?',
+    ],
+    ['denies the cursor paging permission', NO_CURSOR_PERMISSION_ERROR],
+    [
+      'denies the cursor paging permission in an error object',
+      {
+        type: 'security_exception',
+        reason:
+          'no permissions for [cluster:admin/opensearch/securityanalytics/alerts/get_page] and User [name=reader]',
+      },
+    ],
+  ])(
+    'detects support without cursor paging with a second request if the backend %s',
+    async (_, error) => {
+      const getAlerts = jest.fn((params) =>
+        params.paging ? Promise.resolve({ ok: false, error }) : ok()
+      );
+      const store = createStore(getAlerts);
+      dataSourceInfo.activeDataSource = { id: 'cluster' };
+
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+
+      expect(getAlerts.mock.calls.map(([params]) => params)).toEqual([
+        { startIndex: 0, size: 0, paging: 'cursor', dataSource: { id: 'cluster' } },
+        { startIndex: 0, size: 0, dataSource: { id: 'cluster' } },
+      ]);
+      expect(store.getAlertsServerSideSupport()).toBe('supported');
+      expect(store.getAlertsCursorSupport()).toBe(false);
+      // Known for the data source
+      expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'supported' });
+      expect(getAlerts).toHaveBeenCalledTimes(2);
+    }
+  );
+
+  it('detects an older backend that requires a detector with a single request', async () => {
+    const getAlerts = jest.fn(() => Promise.resolve({ ok: false, error: OLD_BACKEND_ERROR }));
+    const store = createStore(getAlerts);
+
+    expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+    expect(getAlerts).toHaveBeenCalledTimes(1);
+    expect(store.getAlertsCursorSupport()).toBe(false);
+  });
+
+  it('detects an older backend that rejects cursor paging and requires a detector', async () => {
+    const getAlerts = jest.fn((params) =>
+      Promise.resolve({ ok: false, error: params.paging ? NO_CURSOR_ERROR : OLD_BACKEND_ERROR })
+    );
+    const store = createStore(getAlerts);
+
+    expect(await store.detectAlertsServerSideSupport()).toEqual({ support: 'unsupported' });
+    expect(getAlerts).toHaveBeenCalledTimes(2);
+    expect(store.getAlertsServerSideSupport()).toBe('unsupported');
+    expect(store.getAlertsCursorSupport()).toBe(false);
+  });
+
+  it('leaves the support unknown if the second request fails otherwise', async () => {
+    const getAlerts = jest.fn((params) =>
+      Promise.resolve({ ok: false, error: params.paging ? NO_CURSOR_ERROR : 'Service unavailable' })
+    );
+    const store = createStore(getAlerts);
+
+    expect(await store.detectAlertsServerSideSupport()).toEqual({
+      support: 'unknown',
+      error: 'Service unavailable',
+    });
+    expect(store.getAlertsServerSideSupport()).toBe('unknown');
+  });
+
+  it('knows the cursor paging support per data source', async () => {
+    const getAlerts = jest.fn((params) =>
+      params.paging && params.dataSource.id === 'cluster-without-cursor'
+        ? Promise.resolve({ ok: false, error: NO_CURSOR_ERROR })
+        : ok()
+    );
+    const store = createStore(getAlerts);
+
+    dataSourceInfo.activeDataSource = { id: 'cluster-without-cursor' };
+    await store.detectAlertsServerSideSupport();
+    dataSourceInfo.activeDataSource = { id: 'cluster-with-cursor' };
+    expect(store.getAlertsCursorSupport()).toBe(false);
+    await store.detectAlertsServerSideSupport();
+    expect(store.getAlertsCursorSupport()).toBe(true);
+    dataSourceInfo.activeDataSource = { id: 'cluster-without-cursor' };
+    expect(store.getAlertsCursorSupport()).toBe(false);
+  });
+
+  it('passes the cursor paging params on and returns the cursors of a page', async () => {
+    const alerts = createAlerts(3);
+    const getAlerts = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        response: { alerts, total_alerts: 37512, next_cursor: 'next1', prev_cursor: 'prev1' },
+      })
+    );
+    const store = createStore(getAlerts);
+    const params = {
+      size: 3,
+      paging: 'cursor' as const,
+      searchAfter: 'abc_-1',
+      direction: 'prev' as const,
+    };
+
+    expect(await store.getAlertsPage(params)).toEqual({
+      ok: true,
+      alerts,
+      total: 37512,
+      nextCursor: 'next1',
+      prevCursor: 'prev1',
+    });
+    expect(getAlerts).toHaveBeenCalledWith(params);
+  });
+
+  it.each([
+    ['rejects the cursor paging params', NO_CURSOR_ERROR],
+    [
+      'rejects searchAfter and direction',
+      'request [/_plugins/_security_analytics/alerts] contains unrecognized parameters: [direction], [searchAfter]',
+    ],
+    ['denies the cursor paging permission', NO_CURSOR_PERMISSION_ERROR],
+  ])(
+    'returns unsupported and detects the support again if a page in cursor paging hits a node that %s',
+    async (_, error) => {
+      const getAlerts = jest
+        .fn()
+        .mockImplementationOnce(ok)
+        .mockResolvedValueOnce({ ok: false, error });
+      const store = createStore(getAlerts);
+      dataSourceInfo.activeDataSource = { id: 'cluster' };
+      await store.detectAlertsServerSideSupport();
+      expect(store.getAlertsCursorSupport()).toBe(true);
+
+      expect(await store.getAlertsPage({ size: 10, paging: 'cursor', searchAfter: 'a1' })).toEqual({
+        ok: false,
+        error,
+        unsupported: true,
+      });
+      expect(store.getAlertsServerSideSupport()).toBe('unknown');
+      expect(store.getAlertsCursorSupport()).toBe(false);
+    }
+  );
+
+  it('does not treat the cursor permission error of a request without cursor paging as unsupported', async () => {
+    const getAlerts = jest
+      .fn()
+      .mockImplementationOnce(ok)
+      .mockResolvedValueOnce({ ok: false, error: NO_CURSOR_PERMISSION_ERROR });
+    const store = createStore(getAlerts);
+    await store.detectAlertsServerSideSupport();
+
+    expect(await store.getAlertsPage({ size: 10 })).toEqual({
+      ok: false,
+      error: NO_CURSOR_PERMISSION_ERROR,
+    });
+    expect(store.getAlertsServerSideSupport()).toBe('supported');
+  });
+});
+
 describe('isAlertsServerSideUnsupportedError', () => {
   const REQUEST = 'request [/_plugins/_security_analytics/alerts] contains';
 
@@ -588,6 +767,15 @@ describe('isAlertsServerSideUnsupportedError', () => {
     [
       'rejecting a param in other case',
       'Request contains Unrecognized Parameter: [SEVERITYLEVELS]',
+    ],
+    ['rejecting paging', `${REQUEST} unrecognized parameter: [paging]`],
+    [
+      'rejecting the cursor paging params',
+      `${REQUEST} unrecognized parameters: [direction], [paging], [searchAfter]`,
+    ],
+    [
+      'rejecting cursor paging and filter params',
+      `${REQUEST} unrecognized parameters: [alertStates], [paging], [searchAfter]`,
     ],
     [
       'rejecting a param in an error object',
@@ -619,6 +807,14 @@ describe('isAlertsServerSideUnsupportedError', () => {
       { type: 'illegal_argument_exception', reason: `${REQUEST} unrecognized parameter: [foo]` },
     ],
     ['rejecting no param in particular', 'unrecognized parameter'],
+    [
+      'rejecting cursor paging and another param',
+      `${REQUEST} unrecognized parameters: [paging], [foo]`,
+    ],
+    [
+      'denying the cursor paging permission',
+      'no permissions for [cluster:admin/opensearch/securityanalytics/alerts/get_page] and User [name=reader]',
+    ],
     [
       'failing otherwise',
       '[action_request_validation_exception] Validation Failed: 1: invalid sort',

@@ -67,6 +67,49 @@ describe('AlertsService.getAlerts', () => {
     });
   });
 
+  it('sends the cursor paging params without startIndex with a cursor', async () => {
+    const { service, httpClient } = createService();
+
+    await service.getAlerts({ size: 100, paging: 'cursor', startIndex: 9900 });
+    await service.getAlerts({
+      detector_id: 'detector-1',
+      size: 100,
+      paging: 'cursor',
+      searchAfter: 'abc_-',
+      direction: 'prev',
+    });
+
+    expect(httpClient.get.mock.calls[0][1].query).toMatchObject({
+      size: 100,
+      startIndex: 9900,
+      paging: 'cursor',
+    });
+    expect(httpClient.get.mock.calls[0][1].query).not.toHaveProperty('searchAfter');
+    expect(httpClient.get.mock.calls[0][1].query).not.toHaveProperty('direction');
+    const { query } = httpClient.get.mock.calls[1][1];
+    expect(query).toMatchObject({
+      detector_id: 'detector-1',
+      size: 100,
+      paging: 'cursor',
+      searchAfter: 'abc_-',
+      direction: 'prev',
+    });
+    // The backend rejects startIndex with a cursor.
+    expect(query).not.toHaveProperty('startIndex');
+  });
+
+  it('does not send the cursor paging params without paging', async () => {
+    const { service, httpClient } = createService();
+
+    await service.getAlerts({ size: 10, searchAfter: 'abc', direction: 'next' });
+
+    const { query } = httpClient.get.mock.calls[0][1];
+    expect(query).not.toHaveProperty('paging');
+    expect(query).not.toHaveProperty('searchAfter');
+    expect(query).not.toHaveProperty('direction');
+    expect(query.startIndex).toBe(0);
+  });
+
   it('sends only the detector id when a detector id and type are given', async () => {
     const { service, httpClient } = createService();
 

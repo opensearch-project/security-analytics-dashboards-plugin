@@ -4,12 +4,13 @@
  */
 
 import {
-  CriteriaWithPagination,
+  Criteria,
   EuiBasicTable,
   EuiBasicTableColumn,
   EuiCompressedFieldSearch,
   EuiFilterGroup,
   EuiSmallButton,
+  EuiSmallButtonEmpty,
   EuiSmallButtonIcon,
   EuiFlexGroup,
   EuiFlexItem,
@@ -60,6 +61,7 @@ import {
   getAlertsPageParams,
   getAlertsSearchString,
   getAlertsTableColumnField,
+  getNumberedAlertsLimit,
 } from '../../utils/helpers';
 import { AlertsMultiSelectFilter } from '../../components/AlertsMultiSelectFilter/AlertsMultiSelectFilter';
 import {
@@ -141,8 +143,14 @@ export interface AlertsState {
   alertsResultWindowReached: boolean;
   alertsTableQuery: AlertsTableQuery;
   alertsSearchInput: string;
-  // Total number of alerts matching the query (capped at the max result window by the backend)
+  // Total number of alerts matching the query (capped at the max result window by the backend,
+  // unless alertsCursorPaging)
   alertsTotal?: number;
+  // Whether the shown page was got with cursor paging: the total is exact and the alerts beyond the
+  // numbered pages can be paged with alertsCursors.
+  alertsCursorPaging: boolean;
+  // The cursors of the next and previous page of the shown page in cursor paging, null if none
+  alertsCursors: { next: string | null; prev: string | null };
 }
 
 export const alertsGroupByOptions = [
@@ -174,6 +182,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
   // Id of the latest detectors request; responses of older requests are ignored.
   private detectorsRequestId = 0;
   private alertsTableRef = React.createRef<EuiBasicTable<AlertItem>>();
+  // The query of the shown page of detection rule alerts
+  private shownAlertsTableQuery: AlertsTableQuery = DEFAULT_ALERTS_TABLE_QUERY;
 
   constructor(props: AlertsProps) {
     super(props);
@@ -210,6 +220,8 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       alertsResultWindowReached: false,
       alertsTableQuery: DEFAULT_ALERTS_TABLE_QUERY,
       alertsSearchInput: '',
+      alertsCursorPaging: false,
+      alertsCursors: { next: null, prev: null },
     };
   }
 
@@ -233,10 +245,12 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       // alerts of the previous one if loading the new ones fails.
       this.setState(
         {
-          alertsTableQuery: { ...this.state.alertsTableQuery, pageIndex: 0 },
+          alertsTableQuery: { ...this.state.alertsTableQuery, pageIndex: 0, cursor: undefined },
           alerts: [],
           filteredAlerts: [],
           alertsTotal: undefined,
+          alertsCursorPaging: false,
+          alertsCursors: { next: null, prev: null },
           alertsResultWindowReached: false,
           detectors: {},
           selectedDetectionRuleAlertItems: [],
@@ -481,8 +495,15 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
     const getPage = async (): Promise<AlertsPageResult> => {
       try {
+        // Cursor paging (exact totals, pages beyond the max result window) once the backend is
+        // known to support it for the user, offset paging as before otherwise.
         return await DataStore.alerts.getAlertsPage(
-          getAlertsPageParams(query, getDuration(dateTimeFilter), detectorId)
+          getAlertsPageParams(
+            query,
+            getDuration(dateTimeFilter),
+            detectorId,
+            DataStore.alerts.getAlertsCursorSupport()
+          )
         );
       } catch (e: any) {
         return { ok: false, error: e };
@@ -532,17 +553,27 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
     if (!result.ok) {
       errorNotificationToast(notifications, 'retrieve', 'alerts', result.error);
-      this.setState({ loading: false });
+      if (query.cursor || this.state.alertsTableQuery.cursor) {
+        // The rows and cursors stay those of the shown page, so stay on it to page from it.
+        this.setState({ loading: false, alertsTableQuery: this.shownAlertsTableQuery });
+      } else {
+        this.setState({ loading: false });
+      }
       return;
     }
 
-    let pageQuery = query;
+    const cursorPaging = DataStore.alerts.getAlertsCursorSupport();
+    // A page beyond the numbered pages can only be shown with cursor paging.
+    let pageQuery = query.cursor && !cursorPaging ? { ...query, cursor: undefined } : query;
     // The page might be past the last page, e.g. because alerts got acknowledged meanwhile.
+    const numberedAlerts = cursorPaging
+      ? getNumberedAlertsLimit(query.pageSize)
+      : MAX_ALERTS_RESULT_WINDOW;
     const lastPageIndex = Math.max(
       0,
-      Math.ceil(Math.min(result.total, MAX_ALERTS_RESULT_WINDOW) / query.pageSize) - 1
+      Math.ceil(Math.min(result.total, numberedAlerts) / query.pageSize) - 1
     );
-    if (!result.alerts.length && query.pageIndex > lastPageIndex) {
+    if (!pageQuery.cursor && !result.alerts.length && query.pageIndex > lastPageIndex) {
       if (result.total > 0 && jumpToLastPageIfEmpty) {
         // Get the last page, but only once per load in case alerts keep disappearing.
         pageQuery = { ...query, pageIndex: lastPageIndex };
@@ -556,11 +587,14 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       pageQuery = { ...query, pageIndex: lastPageIndex };
     }
 
+    this.shownAlertsTableQuery = pageQuery;
     this.setState({
       alertsServerSide: true,
       alerts: result.alerts,
       alertsTotal: result.total,
       alertsTableQuery: pageQuery,
+      alertsCursorPaging: cursorPaging,
+      alertsCursors: { next: result.nextCursor ?? null, prev: result.prevCursor ?? null },
       loading: false,
       widgetEmptyMessage: result.alerts.length ? undefined : (
         <EuiEmptyPrompt
@@ -648,13 +682,19 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     // the rolling upgrade finished.
     this.setState({
       alertsServerSide: false,
-      alertsTableQuery: { ...this.state.alertsTableQuery, pageIndex: 0 },
+      alertsTableQuery: { ...this.state.alertsTableQuery, pageIndex: 0, cursor: undefined },
+      alertsCursorPaging: false,
+      alertsCursors: { next: null, prev: null },
     });
     this.getAlerts(this.createAbortSignal(), detectorsRequest);
   }
 
+  /**
+   * Changes the query and gets its first page. Any change but to another page beyond the numbered
+   * pages (a cursor) goes back to the numbered pages.
+   */
   private updateAlertsTableQuery(changes: Partial<AlertsTableQuery>) {
-    const query = { ...this.state.alertsTableQuery, ...changes };
+    const query = { ...this.state.alertsTableQuery, cursor: undefined, ...changes };
     this.setState({ alertsTableQuery: query });
     this.clearDetectionRuleAlertsSelection();
     this.getAlertsPage(query);
@@ -665,7 +705,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
     this.setState({ selectedDetectionRuleAlertItems: [] });
   }
 
-  onAlertsTableChange = ({ page, sort }: CriteriaWithPagination<AlertItem>) => {
+  onAlertsTableChange = ({ page, sort }: Criteria<AlertItem>) => {
     const query = this.state.alertsTableQuery;
     const changes: Partial<AlertsTableQuery> = {};
     const sortField = sort ? ALERTS_TABLE_SORT_FIELDS[sort.field as string] : undefined;
@@ -677,18 +717,65 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       changes.pageIndex = 0;
     }
 
-    if (page.size !== query.pageSize) {
+    // Pages beyond the numbered pages have no pagination of the table.
+    if (page && page.size !== query.pageSize) {
       changes.pageSize = page.size;
       changes.pageIndex = 0;
     }
 
-    if (changes.pageIndex === undefined && page.index !== query.pageIndex) {
+    if (page && changes.pageIndex === undefined && page.index !== query.pageIndex) {
       changes.pageIndex = page.index;
     }
 
     if (Object.keys(changes).length) {
       this.updateAlertsTableQuery(changes);
     }
+  };
+
+  /**
+   * Gets the page after the shown one with its next cursor: the page after the last numbered page,
+   * or after a page beyond the numbered pages.
+   */
+  onAlertsNextPage = () => {
+    const { alertsTableQuery: query, alertsCursors, alerts } = this.state;
+    if (!alertsCursors.next) {
+      return;
+    }
+
+    const offset = query.cursor
+      ? query.cursor.offset + alerts.length
+      : (query.pageIndex + 1) * query.pageSize;
+    this.updateAlertsTableQuery({
+      cursor: { searchAfter: alertsCursors.next, direction: 'next', offset },
+    });
+  };
+
+  /**
+   * Gets the page before the shown page beyond the numbered pages with its previous cursor, or the
+   * last numbered page if the shown page is the first one after it.
+   */
+  onAlertsPreviousPage = () => {
+    const { alertsTableQuery: query, alertsCursors } = this.state;
+    if (!query.cursor) {
+      return;
+    }
+
+    const numberedAlerts = getNumberedAlertsLimit(query.pageSize);
+    const offset = query.cursor.offset - query.pageSize;
+    if (offset < numberedAlerts || !alertsCursors.prev) {
+      this.updateAlertsTableQuery({
+        pageIndex: Math.max(0, Math.ceil(numberedAlerts / query.pageSize) - 1),
+      });
+      return;
+    }
+
+    this.updateAlertsTableQuery({
+      cursor: { searchAfter: alertsCursors.prev, direction: 'prev', offset },
+    });
+  };
+
+  onAlertsFirstPage = () => {
+    this.updateAlertsTableQuery({ pageIndex: 0 });
   };
 
   onAlertsSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1209,7 +1296,7 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
 
     if (this.state.alertsServerSide) {
       // Reload the current page, or the last page if no alerts are left on it.
-      this.updateAlertsTableQuery({});
+      this.updateAlertsTableQuery({ cursor: this.state.alertsTableQuery.cursor });
     } else {
       this.clearDetectionRuleAlertsSelection();
       this.onRefresh();
@@ -1609,14 +1696,40 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
       alertsTableQuery,
       alertsSearchInput,
       alertsTotal,
+      alertsCursorPaging,
       loading,
       widgetEmptyMessage,
     } = this.state;
-    const totalCapped = alertsTotal !== undefined && alertsTotal >= MAX_ALERTS_RESULT_WINDOW;
+    // The total is exact with cursor paging, capped at the max result window otherwise.
+    const totalCapped =
+      !alertsCursorPaging && alertsTotal !== undefined && alertsTotal >= MAX_ALERTS_RESULT_WINDOW;
+    const numberedAlerts = alertsCursorPaging
+      ? getNumberedAlertsLimit(alertsTableQuery.pageSize)
+      : MAX_ALERTS_RESULT_WINDOW;
     const totalLabel = totalCapped
       ? `${MAX_ALERTS_RESULT_WINDOW.toLocaleString('en-US')}+`
       : alertsTotal?.toLocaleString('en-US');
     const sortField = getAlertsTableColumnField(alertsTableQuery.sortField);
+    const tableProps = {
+      ref: this.alertsTableRef,
+      columns: this.getColumns(),
+      items: alerts,
+      itemId: 'id',
+      isSelectable: true,
+      selection,
+      sorting: sortField
+        ? {
+            sort: {
+              field: sortField as keyof AlertItem,
+              direction: alertsTableQuery.sortDirection,
+            },
+          }
+        : {},
+      onChange: this.onAlertsTableChange,
+      loading,
+      noItemsMessage: loading ? 'Loading alerts...' : widgetEmptyMessage,
+      'data-test-subj': 'detectionRuleAlertsTable',
+    };
 
     return (
       <ContentPanel
@@ -1661,35 +1774,107 @@ export class Alerts extends Component<AlertsProps, AlertsState> {
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer size="s" />
-        <EuiBasicTable<AlertItem>
-          ref={this.alertsTableRef}
-          columns={this.getColumns()}
-          items={alerts}
-          itemId="id"
-          isSelectable={true}
-          selection={selection}
-          pagination={{
-            pageIndex: alertsTableQuery.pageIndex,
-            pageSize: alertsTableQuery.pageSize,
-            totalItemCount: Math.min(alertsTotal ?? 0, MAX_ALERTS_RESULT_WINDOW),
-            pageSizeOptions: ALERTS_PAGE_SIZE_OPTIONS,
-          }}
-          sorting={
-            sortField
-              ? {
-                  sort: {
-                    field: sortField as keyof AlertItem,
-                    direction: alertsTableQuery.sortDirection,
-                  },
-                }
-              : {}
-          }
-          onChange={this.onAlertsTableChange}
-          loading={loading}
-          noItemsMessage={loading ? 'Loading alerts...' : widgetEmptyMessage}
-          data-test-subj="detectionRuleAlertsTable"
-        />
+        {alertsTableQuery.cursor ? (
+          // Pages beyond the numbered pages are paged with the cursor paging buttons below.
+          <EuiBasicTable<AlertItem> {...tableProps} />
+        ) : (
+          <EuiBasicTable<AlertItem>
+            {...tableProps}
+            pagination={{
+              pageIndex: alertsTableQuery.pageIndex,
+              pageSize: alertsTableQuery.pageSize,
+              totalItemCount: Math.min(alertsTotal ?? 0, numberedAlerts),
+              pageSizeOptions: ALERTS_PAGE_SIZE_OPTIONS,
+            }}
+          />
+        )}
+        {this.renderAlertsCursorPaging(numberedAlerts)}
       </ContentPanel>
+    );
+  }
+
+  /**
+   * Next and previous buttons for the alerts beyond the numbered pages, which end within the max
+   * result window: shown on the last numbered page and the pages after it, if cursor paging is
+   * supported and more alerts match.
+   */
+  private renderAlertsCursorPaging(numberedAlerts: number) {
+    const { alerts, alertsTableQuery, alertsTotal, alertsCursorPaging, alertsCursors, loading } =
+      this.state;
+    const { cursor, pageIndex, pageSize } = alertsTableQuery;
+    const onLastNumberedPage = !cursor && (pageIndex + 1) * pageSize >= numberedAlerts;
+    if (
+      !alertsCursorPaging ||
+      alertsTotal === undefined ||
+      alertsTotal <= numberedAlerts ||
+      (!cursor && !onLastNumberedPage)
+    ) {
+      return null;
+    }
+
+    const format = (value: number) => value.toLocaleString('en-US');
+    let range: string;
+    if (!cursor) {
+      range = `Showing the first ${format(numberedAlerts)} of ${format(alertsTotal)} alerts.`;
+    } else if (alerts.length) {
+      range = `Showing ${format(cursor.offset + 1)}–${format(
+        cursor.offset + alerts.length
+      )} of ${format(alertsTotal)}`;
+    } else {
+      range = `No alerts after ${format(cursor.offset)} of ${format(alertsTotal)}`;
+    }
+
+    return (
+      <>
+        <EuiSpacer size="s" />
+        <EuiFlexGroup
+          gutterSize="s"
+          alignItems="center"
+          justifyContent="flexEnd"
+          responsive={false}
+          data-test-subj="alertsCursorPaging"
+        >
+          <EuiFlexItem grow={false}>
+            <EuiText size="s" data-test-subj="alertsCursorPagingRange">
+              {range}
+            </EuiText>
+          </EuiFlexItem>
+          {cursor && (
+            <EuiFlexItem grow={false}>
+              <EuiSmallButtonEmpty
+                onClick={this.onAlertsFirstPage}
+                isDisabled={loading}
+                data-test-subj="alertsCursorFirstPageButton"
+              >
+                First page
+              </EuiSmallButtonEmpty>
+            </EuiFlexItem>
+          )}
+          {cursor && (
+            <EuiFlexItem grow={false}>
+              <EuiSmallButtonEmpty
+                iconType="arrowLeft"
+                onClick={this.onAlertsPreviousPage}
+                isDisabled={loading}
+                data-test-subj="alertsCursorPreviousButton"
+              >
+                Previous
+              </EuiSmallButtonEmpty>
+            </EuiFlexItem>
+          )}
+          <EuiFlexItem grow={false}>
+            <EuiSmallButtonEmpty
+              iconType="arrowRight"
+              iconSide="right"
+              onClick={this.onAlertsNextPage}
+              isDisabled={loading || !alertsCursors.next}
+              data-test-subj="alertsCursorNextButton"
+            >
+              {cursor ? 'Next' : `Next ${format(pageSize)} alerts`}
+            </EuiSmallButtonEmpty>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </>
     );
   }
 

@@ -5,7 +5,7 @@
 
 import { setupAlertsRoutes } from './AlertRoutes';
 import { API } from '../utils/constants';
-import { ALERTS_SORT_FIELDS } from '../../common/constants';
+import { ALERTS_CURSOR_MAX_LENGTH, ALERTS_SORT_FIELDS } from '../../common/constants';
 
 describe('Alerts routes', () => {
   const getAlertsQueryValidation = () => {
@@ -103,6 +103,39 @@ describe('Alerts routes', () => {
       'searchString',
       ['a OR b-c', 'name:(x)', '"quoted"', 'a~2', '/regex/', 'a?', 'a&&b', 'a\tb', 'a'.repeat(257)],
     ],
+  ])('rejects invalid %s values', (param, values) => {
+    const validation = getAlertsQueryValidation();
+    values.forEach((value) => {
+      expect(() => validation.validate({ [param]: value })).toThrow();
+    });
+  });
+
+  it('accepts the cursor paging params', () => {
+    const validation = getAlertsQueryValidation();
+    const query = {
+      paging: 'cursor',
+      searchAfter: 'eyJ2IjoxfQ_-',
+      direction: 'prev',
+      size: '100',
+    };
+
+    expect(validation.validate(query)).toEqual({ ...query, size: 100 });
+    expect(validation.validate({ paging: 'cursor', direction: 'next' })).toEqual({
+      paging: 'cursor',
+      direction: 'next',
+    });
+    expect(validation.validate({ searchAfter: 'a'.repeat(ALERTS_CURSOR_MAX_LENGTH) })).toEqual({
+      searchAfter: 'a'.repeat(ALERTS_CURSOR_MAX_LENGTH),
+    });
+  });
+
+  it.each([
+    ['paging', ['offset', 'CURSOR', '', 'cursor,offset']],
+    [
+      'searchAfter',
+      ['', 'abc=', 'a+b', 'a/b', 'a b', 'a.b', '{"v":1}', 'a'.repeat(ALERTS_CURSOR_MAX_LENGTH + 1)],
+    ],
+    ['direction', ['forward', 'NEXT', 'previous', '']],
   ])('rejects invalid %s values', (param, values) => {
     const validation = getAlertsQueryValidation();
     values.forEach((value) => {

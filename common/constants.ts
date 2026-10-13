@@ -36,3 +36,15 @@ export const ALERTS_SEARCH_STRING_MAX_LENGTH = 256;
  * spaces between the terms). Everything else is query_string syntax and rejected.
  */
 export const ALERTS_SEARCH_STRING_PATTERN = /^[\p{L}\p{M}\p{N}_.':\\* ]*$/u;
+
+/**
+ * Cursor paging of the get alerts API (paging=cursor): pages beyond the max result window are got
+ * with the next or previous cursor of a page (searchAfter) and a direction. Cursors are opaque
+ * base64url strings of at most this length.
+ */
+export const ALERTS_CURSOR_MAX_LENGTH = 2048;
+
+export const ALERTS_CURSOR_PATTERN = /^[A-Za-z0-9_-]+$/;
+
+// Max page size of the get alerts API in cursor paging
+export const ALERTS_CURSOR_MAX_PAGE_SIZE = 1000;

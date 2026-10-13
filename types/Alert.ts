@@ -87,6 +87,12 @@ export interface GetAlertsParams {
   alertStates?: string;
   // query_string query over the detector (monitor) and trigger names
   searchString?: string;
+  // Cursor paging: the exact total and the cursors of the next and previous pages are returned.
+  paging?: 'cursor';
+  // In cursor paging, the cursor of the alert the page is after (next) or before (prev). Can't be
+  // combined with startIndex.
+  searchAfter?: string;
+  direction?: 'next' | 'prev';
   dataSource?: any;
 }
 
@@ -94,6 +100,9 @@ export interface GetAlertsResponse {
   alerts: AlertResponse[];
   total_alerts: number;
   detectorType: string;
+  // Cursor paging only: the cursors of the next and previous pages, null if there is none
+  next_cursor?: string | null;
+  prev_cursor?: string | null;
 }
 
 export interface GetCorrelationAlertsResponse {

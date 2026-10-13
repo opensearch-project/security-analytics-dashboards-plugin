@@ -34,6 +34,9 @@ export default class AlertsService {
       severityLevels,
       alertStates,
       searchString,
+      paging,
+      searchAfter,
+      direction,
       dataSource,
     } = getAlertsParams;
     const query: { [key: string]: string | number | undefined } = {
@@ -49,6 +52,16 @@ export default class AlertsService {
       alertStates,
       searchString,
     };
+
+    if (paging) {
+      query.paging = paging;
+      if (searchAfter) {
+        // The backend rejects startIndex with searchAfter.
+        delete query.startIndex;
+        query.searchAfter = searchAfter;
+        query.direction = direction;
+      }
+    }
 
     // Without a detector id or type the backend returns the alerts of all detectors.
     if (detector_id) {

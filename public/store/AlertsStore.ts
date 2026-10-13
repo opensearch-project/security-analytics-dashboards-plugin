@@ -11,7 +11,14 @@ import { MAX_ALERTS_RESULT_WINDOW } from '../utils/constants';
 import { dataSourceInfo } from '../services/utils/constants';
 
 export type AlertsPageResult =
-  | { ok: true; alerts: AlertResponse[]; total: number }
+  | {
+      ok: true;
+      alerts: AlertResponse[];
+      total: number;
+      // Cursor paging only: the cursors of the next and previous pages, null if there is none
+      nextCursor: string | null;
+      prevCursor: string | null;
+    }
   // unsupported: the backend rejected the request as an older backend would, e.g. a node that
   // wasn't upgraded yet during a rolling upgrade. The support of the data source is then unknown
   // again, so it's detected anew.
@@ -39,13 +46,32 @@ export type AlertsServerSideSupportResult =
 export const ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS = 5 * 60 * 1000;
 
 type KnownAlertsServerSideSupport =
-  { support: 'supported' } | { support: 'unsupported'; expiresAt: number };
+  // cursor: whether the backend also supports cursor paging (paging=cursor) for the user
+  { support: 'supported'; cursor: boolean } | { support: 'unsupported'; expiresAt: number };
 
 // Older backends require a detector id or type when getting alerts.
 const DETECTOR_REQUIRED_ERROR = 'at least one of detector type or detector id needs to be passed';
 
+// The params of cursor paging, which older backends don't know, in lower case.
+const ALERTS_CURSOR_PARAMS = ['paging', 'searchafter', 'direction'];
+
 // The params older backends don't know, in lower case.
-const ALERTS_SERVER_SIDE_PARAMS = ['severitylevels', 'alertstates', 'sortstring', 'searchstring'];
+const ALERTS_SERVER_SIDE_PARAMS = [
+  'severitylevels',
+  'alertstates',
+  'sortstring',
+  'searchstring',
+  ...ALERTS_CURSOR_PARAMS,
+];
+
+// Cursor paging has its own permission, e.g. the security_analytics_read_access role of the
+// security plugin doesn't have it (yet). The security plugin rejects requests without it with
+// "no permissions for [cluster:admin/opensearch/securityanalytics/alerts/get_page] and User ...".
+const ALERTS_CURSOR_PERMISSION_ERROR =
+  'no permissions for [cluster:admin/opensearch/securityanalytics/alerts/get_page]';
+
+const getErrorMessage = (error: any) =>
+  (typeof error === 'string' ? error : JSON.stringify(error ?? '')).toLowerCase();
 
 // OpenSearch rejects params a REST handler doesn't know, e.g. "request [...] contains unrecognized
 // parameter: [severityLevels]" or "contains unrecognized parameters: [alertStates], [foo] -> did
@@ -71,7 +97,7 @@ const getUnrecognizedParams = (message: string): string[] =>
  * rejecting a param for another reason, so that error is shown.
  */
 export const isAlertsServerSideUnsupportedError = (error: any) => {
-  const message = (typeof error === 'string' ? error : JSON.stringify(error ?? '')).toLowerCase();
+  const message = getErrorMessage(error);
   if (message.includes(DETECTOR_REQUIRED_ERROR)) {
     return true;
   }
@@ -80,6 +106,28 @@ export const isAlertsServerSideUnsupportedError = (error: any) => {
   return (
     unrecognizedParams.length > 0 &&
     unrecognizedParams.every((param) => ALERTS_SERVER_SIDE_PARAMS.includes(param))
+  );
+};
+
+/**
+ * Whether the error is how the backend rejects cursor paging when the user lacks its permission.
+ */
+export const isAlertsCursorPermissionError = (error: any) =>
+  getErrorMessage(error).includes(ALERTS_CURSOR_PERMISSION_ERROR);
+
+/**
+ * Whether the error is how a backend rejects cursor paging that might support the alerts of all
+ * detectors without it: a backend that only rejects the cursor paging params, or a user without
+ * the permission of cursor paging.
+ */
+const isAlertsCursorUnsupportedError = (error: any) => {
+  if (isAlertsCursorPermissionError(error)) {
+    return true;
+  }
+  const unrecognizedParams = getUnrecognizedParams(getErrorMessage(error));
+  return (
+    unrecognizedParams.length > 0 &&
+    unrecognizedParams.every((param) => ALERTS_CURSOR_PARAMS.includes(param))
   );
 };
 
@@ -107,6 +155,19 @@ export class AlertsStore {
     return this.getKnownSupport(dataSourceInfo.activeDataSource.id) ?? 'unknown';
   }
 
+  /**
+   * Whether the backend of the active data source is known to support cursor paging of the alerts,
+   * which pages beyond the max result window and returns exact totals.
+   */
+  public getAlertsCursorSupport(): boolean {
+    const dataSourceId = dataSourceInfo.activeDataSource.id;
+    const known =
+      this.getKnownSupport(dataSourceId) === 'supported'
+        ? this.serverSideSupport.get(dataSourceId)
+        : undefined;
+    return known?.support === 'supported' && known.cursor;
+  }
+
   private getKnownSupport(dataSourceId: string): 'supported' | 'unsupported' | undefined {
     const known = this.serverSideSupport.get(dataSourceId);
     if (known?.support === 'unsupported' && this.now() >= known.expiresAt) {
@@ -118,10 +179,12 @@ export class AlertsStore {
 
   /**
    * Detects whether the backend of the active data source supports paging, sorting, filtering and
-   * searching the alerts of all detectors. While the support is unknown a single request for the
-   * number of alerts of all detectors is made, without any of the params older backends reject.
-   * Older backends reject it because it has no detector. A supported data source stays known as
-   * supported, an unsupported one for ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS. Other errors leave
+   * searching the alerts of all detectors. While the support is unknown a request for the number
+   * of alerts of all detectors in cursor paging is made. If the backend rejects cursor paging, i.e.
+   * it doesn't know its params or the user lacks its permission, the number of alerts is requested
+   * once more without them. Older backends reject that because it has no detector. A supported
+   * data source stays known as supported, along with whether it supports cursor paging, an
+   * unsupported one for ALERTS_SERVER_SIDE_UNSUPPORTED_TTL_MS. Other errors leave
    * the support unknown, so it's detected again next time. Errors are returned, not shown.
    */
   public detectAlertsServerSideSupport(): Promise<AlertsServerSideSupportResult> {
@@ -144,13 +207,23 @@ export class AlertsStore {
     dataSourceId: string
   ): Promise<AlertsServerSideSupportResult> {
     let result: AlertsServerSideSupportResult;
+    let cursor = false;
     try {
       // Size 0 only gets the number of alerts.
-      const res = await this.service.getAlerts({
+      let res = await this.service.getAlerts({
         startIndex: 0,
         size: 0,
+        paging: 'cursor',
         dataSource: { id: dataSourceId },
       });
+      cursor = res.ok;
+      if (!res.ok && isAlertsCursorUnsupportedError(res.error)) {
+        res = await this.service.getAlerts({
+          startIndex: 0,
+          size: 0,
+          dataSource: { id: dataSourceId },
+        });
+      }
       if (res.ok) {
         result = { support: 'supported' };
       } else if (isAlertsServerSideUnsupportedError(res.error)) {
@@ -163,7 +236,7 @@ export class AlertsStore {
     }
 
     if (result.support === 'supported') {
-      this.serverSideSupport.set(dataSourceId, { support: 'supported' });
+      this.serverSideSupport.set(dataSourceId, { support: 'supported', cursor });
     } else if (result.support === 'unsupported') {
       this.serverSideSupport.set(dataSourceId, {
         support: 'unsupported',
@@ -181,7 +254,8 @@ export class AlertsStore {
    * support them. If the backend rejects the request as an older backend would, e.g. because it
    * hit a node that wasn't upgraded yet during a rolling upgrade, the result is unsupported and the
    * support of the data source is unknown again. A single request doesn't tell whether the whole
-   * backend is older, so the support is detected again instead of known as unsupported.
+   * backend is older, so the support is detected again instead of known as unsupported. The same
+   * goes for a request in cursor paging the backend rejects for missing permissions.
    */
   public async getAlertsPage(params: GetAlertsParams): Promise<AlertsPageResult> {
     const dataSourceId = params.dataSource?.id || dataSourceInfo.activeDataSource.id;
@@ -189,10 +263,19 @@ export class AlertsStore {
 
     if (res.ok) {
       const alerts = res.response.alerts ?? [];
-      return { ok: true, alerts, total: res.response.total_alerts ?? alerts.length };
+      return {
+        ok: true,
+        alerts,
+        total: res.response.total_alerts ?? alerts.length,
+        nextCursor: res.response.next_cursor ?? null,
+        prevCursor: res.response.prev_cursor ?? null,
+      };
     }
 
-    if (isAlertsServerSideUnsupportedError(res.error)) {
+    if (
+      isAlertsServerSideUnsupportedError(res.error) ||
+      (params.paging && isAlertsCursorPermissionError(res.error))
+    ) {
       this.serverSideSupport.delete(dataSourceId);
       return { ok: false, error: res.error, unsupported: true };
     }

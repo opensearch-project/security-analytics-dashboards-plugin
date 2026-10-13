@@ -9,6 +9,7 @@ import {
   getAlertsPageParams,
   getAlertsSearchString,
   getAlertsTableColumnField,
+  getNumberedAlertsLimit,
 } from './helpers';
 import { ALERTS_SORT_FIELDS } from '../../../../common/constants';
 import {
@@ -128,6 +129,79 @@ describe('Alerts helpers', () => {
         expect(
           getAlertsPageParams({ ...DEFAULT_ALERTS_TABLE_QUERY, pageSize, pageIndex })
         ).toMatchObject({ startIndex, size });
+      }
+    );
+
+    it('gets numbered pages in cursor paging with startIndex', () => {
+      expect(
+        getAlertsPageParams(
+          { ...DEFAULT_ALERTS_TABLE_QUERY, pageIndex: 999 },
+          undefined,
+          'd1',
+          true
+        )
+      ).toEqual({
+        startIndex: 9990,
+        size: 10,
+        sortString: 'start_time',
+        sortOrder: 'desc',
+        startTime: undefined,
+        endTime: undefined,
+        detector_id: 'd1',
+        paging: 'cursor',
+      });
+    });
+
+    it('gets pages beyond the numbered pages with the cursor and without startIndex', () => {
+      const query = {
+        ...DEFAULT_ALERTS_TABLE_QUERY,
+        pageIndex: 99,
+        pageSize: 100,
+        severities: ['2'],
+        cursor: { searchAfter: 'abc', direction: 'prev' as const, offset: 10100 },
+      };
+      const params = getAlertsPageParams(query, { startTime: 1, endTime: 2 }, undefined, true);
+      expect(params).toEqual({
+        size: 100,
+        sortString: 'start_time',
+        sortOrder: 'desc',
+        startTime: 1,
+        endTime: 2,
+        severityLevels: '2',
+        paging: 'cursor',
+        searchAfter: 'abc',
+        direction: 'prev',
+      });
+      expect(params).not.toHaveProperty('startIndex');
+    });
+
+    it('ignores the cursor without cursor paging', () => {
+      const query = {
+        ...DEFAULT_ALERTS_TABLE_QUERY,
+        pageIndex: 99,
+        pageSize: 100,
+        cursor: { searchAfter: 'abc', direction: 'next' as const, offset: 10000 },
+      };
+      const params = getAlertsPageParams(query);
+      expect(params).toMatchObject({ startIndex: 9900, size: 100 });
+      expect(params).not.toHaveProperty('paging');
+      expect(params).not.toHaveProperty('searchAfter');
+      expect(params).not.toHaveProperty('direction');
+    });
+  });
+
+  describe('getNumberedAlertsLimit', () => {
+    it.each([
+      [10, 10000],
+      [20, 10000],
+      [50, 10000],
+      [100, 10000],
+      [30, 9990],
+      [0, 10000],
+    ])(
+      'ends the numbered pages of size %p within the max result window',
+      (pageSize: number, limit: number) => {
+        expect(getNumberedAlertsLimit(pageSize)).toBe(limit);
       }
     );
   });

@@ -27,6 +27,10 @@ beforeAll(() => {
 const OLD_BACKEND_ERROR =
   '[action_request_validation_exception] Validation Failed: 1: At least one of detector type or detector id needs to be passed;';
 
+// How a backend without cursor paging rejects it
+const NO_CURSOR_ERROR =
+  'request [/_plugins/_security_analytics/alerts] contains unrecognized parameter: [paging]';
+
 const createAlert = (id: string, detectorId: string, state = 'ACTIVE') => ({
   id,
   detector_id: detectorId,
@@ -181,8 +185,11 @@ describe('<Alerts /> spec', () => {
     getThreatIntelAlerts = jest.fn().mockResolvedValue(okAlerts([]));
     acknowledgeAlerts = jest.fn().mockResolvedValue({ ok: true, response: {} });
     DataStore.alerts = createAlertsStore();
-    // The backend supports getting pages of all alerts unless a test says otherwise.
+    // The backend supports getting pages of all alerts, but not cursor paging, unless a test says
+    // otherwise.
+    getAlerts.mockImplementationOnce(() => Promise.resolve({ ok: false, error: NO_CURSOR_ERROR }));
     await DataStore.alerts.detectAlertsServerSideSupport();
+    expect(DataStore.alerts.getAlertsCursorSupport()).toBe(false);
     getAlerts.mockClear();
   });
 
@@ -630,6 +637,356 @@ describe('<Alerts /> spec', () => {
     });
   });
 
+  describe('detection rule alerts with cursor paging', () => {
+    const TOTAL = 25000;
+
+    // A backend with TOTAL alerts that pages them at offsets and with cursors. The cursor of an
+    // alert is `c<position>`.
+    const cursorPage = (params: any, total = TOTAL) => {
+      let from: number;
+      if (params.searchAfter) {
+        const position = Number(params.searchAfter.slice(1));
+        from = params.direction === 'prev' ? Math.max(0, position - params.size) : position + 1;
+      } else {
+        from = params.startIndex ?? 0;
+      }
+      const to = Math.min(total, from + params.size, params.searchAfter ? total : 10000);
+      const alerts = createAlerts(params.detector_id ?? 'detector_1', Math.max(0, to - from), from);
+      return Promise.resolve({
+        ok: true,
+        response: {
+          alerts,
+          total_alerts: total,
+          next_cursor: alerts.length && to < total ? `c${to - 1}` : null,
+          prev_cursor: alerts.length && from > 0 ? `c${from}` : null,
+        },
+      });
+    };
+
+    const cursorBackend =
+      (total = TOTAL) =>
+      (params: any) =>
+        params.paging
+          ? cursorPage(params, total)
+          : Promise.reject(new Error('not in cursor paging'));
+
+    const getRange = () => screen.getByTestId('alertsCursorPagingRange');
+
+    // Renders the page with 100 alerts per page and goes to the last numbered page.
+    const renderLastNumberedPage = async (
+      options?: Parameters<typeof renderAlerts>[0],
+      detectorId = 'detector_1'
+    ) => {
+      const result = renderAlerts(options);
+      await screen.findByText(`trigger ${detectorId}-0`);
+      fireEvent.click(screen.getByTestId('tablePaginationPopoverButton'));
+      fireEvent.click(await screen.findByTestId('tablePagination-100-rows'));
+      await screen.findByText(`trigger ${detectorId}-99`);
+      fireEvent.click(await screen.findByTestId('pagination-button-99'));
+      await screen.findByText(`trigger ${detectorId}-9999`);
+      return result;
+    };
+
+    const clickNext = () => fireEvent.click(screen.getByTestId('alertsCursorNextButton'));
+    const clickPrevious = () => fireEvent.click(screen.getByTestId('alertsCursorPreviousButton'));
+
+    beforeEach(async () => {
+      DataStore.alerts = createAlertsStore();
+      getAlerts.mockImplementation(cursorBackend());
+      await DataStore.alerts.detectAlertsServerSideSupport();
+      expect(DataStore.alerts.getAlertsCursorSupport()).toBe(true);
+      getAlerts.mockClear();
+    });
+
+    it('gets the numbered pages in cursor paging and shows the exact total', async () => {
+      renderAlerts();
+
+      expect(await waitForAlertsRequest(1)).toEqual({
+        startIndex: 0,
+        size: 10,
+        sortString: 'start_time',
+        sortOrder: 'desc',
+        startTime: expect.any(Number),
+        endTime: expect.any(Number),
+        paging: 'cursor',
+      });
+      expect(await screen.findByText('Alerts (25,000)')).toBeInTheDocument();
+      expect(
+        screen.queryByText(/Showing the first 10,000 matching alerts/)
+      ).not.toBeInTheDocument();
+      // Only the last numbered page offers the alerts beyond it.
+      expect(screen.queryByTestId('alertsCursorPaging')).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('pagination-button-1'));
+      expect(await waitForAlertsRequest(2)).toMatchObject({
+        startIndex: 10,
+        size: 10,
+        paging: 'cursor',
+      });
+      expect(lastAlertsRequest().searchAfter).toBeUndefined();
+    });
+
+    it('pages beyond the numbered pages with next and previous and goes back to them', async () => {
+      await renderLastNumberedPage();
+      expect(lastAlertsRequest()).toMatchObject({ startIndex: 9900, size: 100, paging: 'cursor' });
+      expect(screen.queryByTestId('pagination-button-100')).not.toBeInTheDocument();
+      expect(getRange()).toHaveTextContent('Showing the first 10,000 of 25,000 alerts.');
+      expect(screen.queryByTestId('alertsCursorPreviousButton')).not.toBeInTheDocument();
+      const requests = getAlerts.mock.calls.length;
+
+      clickNext();
+      const next = await waitForAlertsRequest(requests + 1);
+      expect(next).toEqual(
+        expect.objectContaining({
+          size: 100,
+          paging: 'cursor',
+          searchAfter: 'c9999',
+          direction: 'next',
+        })
+      );
+      expect(next.startIndex).toBeUndefined();
+      await screen.findByText('trigger detector_1-10000');
+      expect(getRange()).toHaveTextContent('Showing 10,001–10,100 of 25,000');
+      // No numbered pages beyond them
+      expect(screen.queryByTestId('pagination-button-0')).not.toBeInTheDocument();
+      expect(screen.getByText('Alerts (25,000)')).toBeInTheDocument();
+
+      clickNext();
+      expect(await waitForAlertsRequest(requests + 2)).toMatchObject({
+        searchAfter: 'c10099',
+        direction: 'next',
+      });
+      await screen.findByText('trigger detector_1-10100');
+      expect(getRange()).toHaveTextContent('Showing 10,101–10,200 of 25,000');
+
+      clickPrevious();
+      expect(await waitForAlertsRequest(requests + 3)).toMatchObject({
+        searchAfter: 'c10100',
+        direction: 'prev',
+        size: 100,
+      });
+      await screen.findByText('trigger detector_1-10000');
+      expect(getRange()).toHaveTextContent('Showing 10,001–10,100 of 25,000');
+
+      // Back to the last numbered page
+      clickPrevious();
+      const numbered = await waitForAlertsRequest(requests + 4);
+      expect(numbered).toMatchObject({ startIndex: 9900, size: 100, paging: 'cursor' });
+      expect(numbered.searchAfter).toBeUndefined();
+      await screen.findByText('trigger detector_1-9900');
+      expect(getActivePage()).toHaveTextContent('100');
+      expect(getRange()).toHaveTextContent('Showing the first 10,000 of 25,000 alerts.');
+    });
+
+    it('goes to the first page from beyond the numbered pages', async () => {
+      await renderLastNumberedPage();
+      clickNext();
+      await screen.findByText('trigger detector_1-10000');
+      const requests = getAlerts.mock.calls.length;
+
+      fireEvent.click(screen.getByTestId('alertsCursorFirstPageButton'));
+
+      const first = await waitForAlertsRequest(requests + 1);
+      expect(first).toMatchObject({ startIndex: 0, size: 100, paging: 'cursor' });
+      expect(first.searchAfter).toBeUndefined();
+      await screen.findByText('trigger detector_1-0');
+      expect(getActivePage()).toHaveTextContent('1');
+      expect(screen.queryByTestId('alertsCursorPaging')).not.toBeInTheDocument();
+    });
+
+    it('disables next on the last page', async () => {
+      getAlerts.mockImplementation(cursorBackend(10150));
+      await renderLastNumberedPage();
+      clickNext();
+      await screen.findByText('trigger detector_1-10000');
+      expect(screen.getByTestId('alertsCursorNextButton')).toBeEnabled();
+
+      clickNext();
+      await screen.findByText('trigger detector_1-10149');
+      expect(getRange()).toHaveTextContent('Showing 10,101–10,150 of 10,150');
+      expect(screen.getByTestId('alertsCursorNextButton')).toBeDisabled();
+    });
+
+    it.each([
+      ['sorting', () => clickColumnHeader('severity', 4)],
+      ['filtering', () => selectFilterOption('alertsSeverityFilter', '2')],
+      [
+        'searching',
+        () =>
+          fireEvent.keyUp(screen.getByTestId('alertsSearchField'), {
+            key: 'Enter',
+            target: { value: 'detector' },
+          }),
+      ],
+    ])('goes back to the first numbered page when %s', async (_: string, change: () => void) => {
+      await renderLastNumberedPage();
+      clickNext();
+      await screen.findByText('trigger detector_1-10000');
+      const requests = getAlerts.mock.calls.length;
+
+      change();
+
+      await waitFor(() => expect(getAlerts.mock.calls.length).toBeGreaterThan(requests));
+      const request = lastAlertsRequest();
+      expect(request).toMatchObject({ startIndex: 0, paging: 'cursor' });
+      expect(request.searchAfter).toBeUndefined();
+      await screen.findByText('trigger detector_1-0');
+      expect(screen.queryByTestId('alertsCursorPaging')).not.toBeInTheDocument();
+    });
+
+    it('goes back to the first numbered page when the time range changes', async () => {
+      const { setDateTimeFilter } = await renderLastNumberedPage();
+      clickNext();
+      await screen.findByText('trigger detector_1-10000');
+      const requests = getAlerts.mock.calls.length;
+
+      setDateTimeFilter({ startTime: 'now-7d', endTime: 'now' });
+
+      const request = await waitForAlertsRequest(requests + 1);
+      expect(request).toMatchObject({ startIndex: 0, paging: 'cursor' });
+      expect(request.searchAfter).toBeUndefined();
+    });
+
+    it('gets the same page beyond the numbered pages again when refreshing', async () => {
+      await renderLastNumberedPage();
+      clickNext();
+      await screen.findByText('trigger detector_1-10000');
+      const requests = getAlerts.mock.calls.length;
+
+      fireEvent.click(screen.getByTestId('superDatePickerApplyTimeButton'));
+
+      expect(await waitForAlertsRequest(requests + 1)).toMatchObject({
+        searchAfter: 'c9999',
+        direction: 'next',
+        size: 100,
+      });
+      await screen.findByText('trigger detector_1-10000');
+      expect(getRange()).toHaveTextContent('Showing 10,001–10,100 of 25,000');
+    });
+
+    it('gets the same page beyond the numbered pages again after acknowledging and clears the selection', async () => {
+      await renderLastNumberedPage();
+      clickNext();
+      await screen.findByText('trigger detector_1-10000');
+      const requests = getAlerts.mock.calls.length;
+
+      fireEvent.click(within(getTable()).getAllByLabelText('Acknowledge')[0]);
+
+      await waitFor(() =>
+        expect(acknowledgeAlerts).toHaveBeenCalledWith(['detector_1-10000'], 'detector_1')
+      );
+      expect(await waitForAlertsRequest(requests + 1)).toMatchObject({
+        searchAfter: 'c9999',
+        direction: 'next',
+      });
+      await waitFor(() => expect(screen.getByTestId('acknowledge-button')).toBeDisabled());
+    });
+
+    it('clears the selection when going to the next page', async () => {
+      await renderLastNumberedPage();
+      const checkbox = within(getTable()).getAllByRole('checkbox')[1];
+      fireEvent.click(checkbox);
+      await waitFor(() => expect(screen.getByTestId('acknowledge-button')).toBeEnabled());
+
+      clickNext();
+      await screen.findByText('trigger detector_1-10000');
+      expect(screen.getByTestId('acknowledge-button')).toBeDisabled();
+    });
+
+    it('ignores the response of a page superseded by a sort', async () => {
+      await renderLastNumberedPage();
+      const nextPage = deferred<any>();
+      getAlerts.mockImplementationOnce(() => nextPage.promise);
+
+      clickNext();
+      await waitFor(() => expect(lastAlertsRequest().searchAfter).toBe('c9999'));
+      clickColumnHeader('severity', 4);
+      await screen.findByText('trigger detector_1-0');
+
+      await act(async () =>
+        nextPage.resolve(await cursorPage({ size: 100, searchAfter: 'c9999' }))
+      );
+
+      expect(screen.getByText('trigger detector_1-0')).toBeInTheDocument();
+      expect(screen.queryByText('trigger detector_1-10000')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('alertsCursorPaging')).not.toBeInTheDocument();
+    });
+
+    it('pages the alerts of the detector in the route with cursors', async () => {
+      await renderLastNumberedPage({ path: `${ROUTES.ALERTS}/detector_2` }, 'detector_2');
+      expect(lastAlertsRequest()).toMatchObject({ detector_id: 'detector_2', paging: 'cursor' });
+
+      clickNext();
+      expect(await screen.findByText('trigger detector_2-10000')).toBeInTheDocument();
+      expect(lastAlertsRequest()).toMatchObject({
+        detector_id: 'detector_2',
+        paging: 'cursor',
+        searchAfter: 'c9999',
+        direction: 'next',
+      });
+    });
+
+    it('does not offer more pages for at most 10,000 alerts', async () => {
+      getAlerts.mockImplementation(cursorBackend(10000));
+      await renderLastNumberedPage();
+
+      expect(screen.getByText('Alerts (10,000)')).toBeInTheDocument();
+      expect(screen.queryByTestId('alertsCursorPaging')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/Showing the first 10,000 matching alerts/)
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows an error and keeps the rows if a page beyond the numbered pages fails', async () => {
+      await renderLastNumberedPage();
+      getAlerts.mockResolvedValueOnce({ ok: false, error: 'Something failed' });
+
+      clickNext();
+
+      await waitFor(() =>
+        expect(notificationsStartMock.toasts.addDanger).toHaveBeenCalledWith(
+          expect.objectContaining({ text: 'Something failed' })
+        )
+      );
+      expect(screen.getByText('trigger detector_1-9999')).toBeInTheDocument();
+      // Still on the shown page: paging continues from it.
+      await waitFor(() =>
+        expect(getRange()).toHaveTextContent('Showing the first 10,000 of 25,000 alerts.')
+      );
+      expect(screen.getByTestId('pagination-button-99')).toBeInTheDocument();
+
+      clickNext();
+      await screen.findByText('trigger detector_1-10000');
+      expect(lastAlertsRequest()).toMatchObject({ searchAfter: 'c9999', direction: 'next' });
+      expect(getRange()).toHaveTextContent('Showing 10,001–10,100 of 25,000');
+    });
+
+    it('falls back to offset paging if a page in cursor paging is denied the cursor permission', async () => {
+      await renderLastNumberedPage();
+      const permissionError =
+        'no permissions for [cluster:admin/opensearch/securityanalytics/alerts/get_page] and User [name=reader]';
+      getAlerts.mockImplementation((params) =>
+        params.paging
+          ? Promise.resolve({ ok: false, error: permissionError })
+          : Promise.resolve(
+              okAlerts(createAlerts('detector_1', params.size, params.startIndex), 10000)
+            )
+      );
+
+      clickNext();
+
+      // Detected again: no cursor paging, so the page beyond the numbered pages can't be shown
+      await screen.findByText('Alerts (10,000+)');
+      const request = lastAlertsRequest();
+      expect(request.paging).toBeUndefined();
+      expect(request.searchAfter).toBeUndefined();
+      expect(request).toMatchObject({ startIndex: 9900, size: 100 });
+      expect(DataStore.alerts.getAlertsCursorSupport()).toBe(false);
+      expect(screen.queryByTestId('alertsCursorPaging')).not.toBeInTheDocument();
+      expect(notificationsStartMock.toasts.addDanger).not.toHaveBeenCalled();
+    });
+  });
+
   describe('detection rule alerts with a backend that only gets alerts per detector', () => {
     const mockOldBackend = (alertsByDetector: { [detectorId: string]: any[] | Promise<any> }) =>
       getAlerts.mockImplementation((params) => {
@@ -1054,6 +1411,7 @@ describe('<Alerts /> spec', () => {
       expect(await waitForAlertsRequest(1)).toEqual({
         startIndex: 0,
         size: 0,
+        paging: 'cursor',
         dataSource: { id: '' },
       });
       // Filter while it's unknown if the backend supports filters.
@@ -1099,6 +1457,7 @@ describe('<Alerts /> spec', () => {
       expect(getAlerts.mock.calls[0][0]).toEqual({
         startIndex: 0,
         size: 0,
+        paging: 'cursor',
         dataSource: { id: '' },
       });
       expect(getAlerts.mock.calls[1][0]).toMatchObject({ startIndex: 0, size: 10 });
@@ -1124,8 +1483,8 @@ describe('<Alerts /> spec', () => {
       expect(await screen.findByTestId('alertsLoadErrorPrompt')).toBeInTheDocument();
       // Only the detection and its retry, no alerts of any detector
       expect(getAlerts.mock.calls.map(([params]) => params)).toEqual([
-        { startIndex: 0, size: 0, dataSource: { id: '' } },
-        { startIndex: 0, size: 0, dataSource: { id: '' } },
+        { startIndex: 0, size: 0, paging: 'cursor', dataSource: { id: '' } },
+        { startIndex: 0, size: 0, paging: 'cursor', dataSource: { id: '' } },
       ]);
       expect(DataStore.alerts.getAlertsServerSideSupport()).toBe('unknown');
 
