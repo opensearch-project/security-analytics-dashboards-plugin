@@ -4,10 +4,33 @@
  */
 
 import { IRouter } from 'opensearch-dashboards/server';
-import { schema } from '@osd/config-schema';
+import { schema, Type } from '@osd/config-schema';
 import { NodeServices } from '../models/interfaces';
 import { API } from '../utils/constants';
 import { createQueryValidationSchema } from '../utils/helpers';
+import {
+  ALERTS_CURSOR_MAX_LENGTH,
+  ALERTS_CURSOR_PATTERN,
+  ALERTS_SEARCH_STRING_MAX_LENGTH,
+  ALERTS_SEARCH_STRING_PATTERN,
+  ALERTS_SORT_FIELDS,
+  MAX_ALERTS_RESULT_WINDOW,
+} from '../../common/constants';
+import { AlertsSortField } from '../../types';
+
+const SEVERITY_LEVELS_PATTERN = /^[1-5](,[1-5])*$/;
+const ALERT_STATES = 'ACTIVE|ACKNOWLEDGED|COMPLETED|ERROR|DELETED';
+const ALERT_STATES_PATTERN = new RegExp(`^(${ALERT_STATES})(,(${ALERT_STATES}))*$`);
+
+const validateSeverityLevels = (value: string) =>
+  SEVERITY_LEVELS_PATTERN.test(value)
+    ? undefined
+    : 'must be a comma separated list of severity levels from 1 to 5';
+
+const validateAlertStates = (value: string) =>
+  ALERT_STATES_PATTERN.test(value)
+    ? undefined
+    : 'must be a comma separated list of ACTIVE, ACKNOWLEDGED, COMPLETED, ERROR or DELETED';
 
 export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
   const { alertService } = services;
@@ -19,11 +42,48 @@ export function setupAlertsRoutes(services: NodeServices, router: IRouter) {
         query: createQueryValidationSchema({
           detectorType: schema.maybe(schema.string()),
           detector_id: schema.maybe(schema.string()),
-          sortOrder: schema.maybe(schema.string()),
-          size: schema.maybe(schema.number()),
-          startIndex: schema.maybe(schema.number()),
+          // Case-insensitive like the backend (and the unvalidated sortOrder accepted before).
+          sortOrder: schema.maybe(
+            schema.string({
+              validate: (value) =>
+                /^(asc|desc)$/i.test(value) ? undefined : 'must be one of [asc, desc]',
+            })
+          ),
+          sortString: schema.maybe(
+            schema.oneOf(
+              ALERTS_SORT_FIELDS.map((field) => schema.literal(field)) as [Type<AlertsSortField>]
+            )
+          ),
+          // The backend rejects requests where startIndex + size exceeds the max result window.
+          size: schema.maybe(schema.number({ min: 0, max: MAX_ALERTS_RESULT_WINDOW })),
+          startIndex: schema.maybe(schema.number({ min: 0 })),
           startTime: schema.maybe(schema.number()),
           endTime: schema.maybe(schema.number()),
+          searchString: schema.maybe(
+            schema.string({
+              maxLength: ALERTS_SEARCH_STRING_MAX_LENGTH,
+              validate: (value) =>
+                ALERTS_SEARCH_STRING_PATTERN.test(value)
+                  ? undefined
+                  : "must only contain letters, marks, digits, spaces and _ . ' : \\ *",
+            })
+          ),
+          severityLevels: schema.maybe(schema.string({ validate: validateSeverityLevels })),
+          alertStates: schema.maybe(schema.string({ validate: validateAlertStates })),
+          // Cursor paging. The backend validates the cursor and the page size (at most 1000 with a
+          // cursor).
+          paging: schema.maybe(schema.literal('cursor')),
+          searchAfter: schema.maybe(
+            schema.string({
+              minLength: 1,
+              maxLength: ALERTS_CURSOR_MAX_LENGTH,
+              validate: (value) =>
+                ALERTS_CURSOR_PATTERN.test(value)
+                  ? undefined
+                  : 'must only contain letters, digits, _ and -',
+            })
+          ),
+          direction: schema.maybe(schema.oneOf([schema.literal('next'), schema.literal('prev')])),
         }),
       },
     },

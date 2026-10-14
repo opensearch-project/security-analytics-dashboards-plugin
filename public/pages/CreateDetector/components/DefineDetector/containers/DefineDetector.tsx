@@ -49,7 +49,7 @@ interface DefineDetectorProps extends RouteComponentProps, DataSourceProps {
   updateDataValidState: (step: DetectorCreationStep, isValid: boolean) => void;
   onPageChange: (page: { index: number; size: number }) => void;
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
-  onAllRulesToggle: (enabled: boolean) => void;
+  onAllRulesToggle: (enabled: boolean, ruleItems: RuleItem[]) => void;
   replaceFieldMappings: (mappings: FieldMapping[]) => void;
 }
 

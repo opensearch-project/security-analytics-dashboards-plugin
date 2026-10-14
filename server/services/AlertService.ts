@@ -31,27 +31,52 @@ export default class AlertService extends MDSEnabledClientService {
     response: OpenSearchDashboardsResponseFactory
   ): Promise<IOpenSearchDashboardsResponse<ServerResponse<GetAlertsResponse> | ResponseError>> => {
     try {
-      const { detectorType, detector_id, sortOrder, size, startTime, endTime } = request.query;
-      const defaultParams = {
+      const {
+        detectorType,
+        detector_id,
         sortOrder,
+        sortString,
         size,
+        startIndex,
         startTime,
         endTime,
+        searchString,
+        severityLevels,
+        alertStates,
+        paging,
+        searchAfter,
+        direction,
+      } = request.query;
+      const params: GetAlertsParams = {
+        sortOrder,
+        sortString,
+        size,
+        startIndex,
+        startTime,
+        endTime,
+        searchString,
+        severityLevels,
+        alertStates,
       };
-      let params: GetAlertsParams;
 
+      // Cursor paging params are only sent when used, so that older backends, which reject them,
+      // keep working for all other requests.
+      if (paging) {
+        params.paging = paging;
+        if (searchAfter) {
+          params.searchAfter = searchAfter;
+        }
+        if (direction) {
+          params.direction = direction;
+        }
+      }
+
+      // When neither detector_id nor detectorType is given the backend returns the alerts of all
+      // detectors the user has access to. detector_id takes precedence over detectorType.
       if (detector_id) {
-        params = {
-          ...defaultParams,
-          detector_id,
-        };
+        params.detector_id = detector_id;
       } else if (detectorType) {
-        params = {
-          ...defaultParams,
-          detectorType,
-        };
-      } else {
-        throw Error(`Invalid request params: detectorId or detectorType must be specified`);
+        params.detectorType = detectorType;
       }
 
       const client = this.getClient(request, context);

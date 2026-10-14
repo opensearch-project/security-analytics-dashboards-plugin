@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CriteriaWithPagination, EuiInMemoryTable } from '@elastic/eui';
+import { CriteriaWithPagination, EuiInMemoryTable, Query } from '@elastic/eui';
 import React, { useState } from 'react';
 import { RuleItem } from './types/interfaces';
 import { getRulesColumns } from './utils/constants';
@@ -13,7 +13,7 @@ import { ruleSeverity, ruleSource } from '../../../../../Rules/utils/constants';
 export interface DetectionRulesTableProps {
   ruleItems: RuleItem[];
   pageIndex?: number;
-  onAllRulesToggled?: (enabled: boolean) => void;
+  onAllRulesToggled?: (enabled: boolean, ruleItems: RuleItem[]) => void;
   onRuleActivationToggle: (changedItem: RuleItem, isActive: boolean) => void;
   onTableChange?: (nextValues: CriteriaWithPagination<RuleItem>) => void;
   loading?: boolean;
@@ -37,8 +37,13 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
   loading = false,
   onRuleDetails,
 }) => {
+  const [query, setQuery] = useState<Query | null>(null);
   //Filter table by rule type
   const search: Search = {
+    onChange: ({ query: nextQuery }) => {
+      setQuery(nextQuery);
+      return true;
+    },
     box: {
       schema: true,
     },
@@ -62,7 +67,10 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
     ],
   };
   const [pagination, setPagination] = useState({ pageIndex: pageIndex || 0 });
-  const allRulesEnabled = ruleItems.every((item) => item.active);
+  // The toggle-all switch only applies to the rules matching the current search/filters.
+  const visibleRuleItems = query ? Query.execute(query, ruleItems) : ruleItems;
+  const allRulesEnabled =
+    visibleRuleItems.length > 0 && visibleRuleItems.every((item) => item.active);
   ruleItems.sort((a, b) => {
     return (rulePriorityBySeverity[a.severity] || 6) - (rulePriorityBySeverity[b.severity] || 6);
   });
@@ -77,7 +85,7 @@ export const DetectionRulesTable: React.FC<DetectionRulesTableProps> = ({
       <EuiInMemoryTable
         columns={getRulesColumns(
           allRulesEnabled,
-          onAllRulesToggled,
+          onAllRulesToggled && ((enabled: boolean) => onAllRulesToggled(enabled, visibleRuleItems)),
           onRuleActivationToggle,
           onRuleDetails
         )}
