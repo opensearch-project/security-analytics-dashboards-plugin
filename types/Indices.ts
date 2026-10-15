@@ -24,3 +24,11 @@ export interface CatIndex {
 export interface GetIndicesResponse {
   indices: CatIndex[];
 }
+
+export interface DataStream {
+  name: string;
+}
+
+export interface GetDataStreamsResponse {
+  dataStreams: DataStream[];
+}

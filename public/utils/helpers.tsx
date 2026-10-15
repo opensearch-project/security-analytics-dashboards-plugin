@@ -411,7 +411,8 @@ export function isThreatIntelQuery(queryId: string) {
 
 export async function getDataSources(
   indexService: IndexService,
-  notifications: any
+  notifications: any,
+  { includeDataStreams = false }: { includeDataStreams?: boolean } = {}
 ): Promise<
   | {
       ok: true;
@@ -457,6 +458,30 @@ export async function getDataSources(
       errorNotificationToast(notifications, 'retrieve', 'indices', indicesResponse.error);
 
       return { ok: false, error: indicesResponse.error };
+    }
+
+    if (includeDataStreams) {
+      try {
+        const dataStreamsResponse = await indexService.getDataStreams();
+        if (dataStreamsResponse.ok) {
+          dataSourceOptions.push({
+            label: 'Data streams',
+            options: dataStreamsResponse.response.dataStreams.map(({ name }) => ({
+              label: name,
+              value: name,
+            })),
+          });
+        } else {
+          errorNotificationToast(
+            notifications,
+            'retrieve',
+            'data streams',
+            dataStreamsResponse.error
+          );
+        }
+      } catch (error: any) {
+        errorNotificationToast(notifications, 'retrieve', 'data streams', error.message);
+      }
     }
 
     return {
