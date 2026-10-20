@@ -50,7 +50,8 @@ jobs:
       - name: Run opensearch with plugin
         run: |
           cd security-analytics
-          ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
+          # -PnumNodes=1 skips the backend's jacoco coverage setup, whose agent path is invalid on Windows
+          ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} -PnumNodes=1 &
           sleep 300
         shell: bash
 
