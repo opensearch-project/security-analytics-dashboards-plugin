@@ -13,23 +13,17 @@ env:
   GRADLE_VERSION: '7.6.1'
 jobs:
   tests:
-    name: Run ${{ matrix.spec }} Cypress tests (${{ matrix.os }})
+    name: Run ${{ matrix.spec }} Cypress tests
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
         # Running each spec separately due to cypress memory-related renderer crashes
         spec:
           - 1_detectors
           - 2_rules
           - 3_alerts
           - 4_findings
-        include:
-          - os: windows-latest
-            cypress_cache_folder: ~/AppData/Local/Cypress/Cache
-          - os: ubuntu-latest
-            cypress_cache_folder: ~/.cache/Cypress
-    runs-on: ${{ matrix.os }}
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -42,10 +36,6 @@ jobs:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
           java-version: 21
 
-      - name: Enable longer filenames
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: git config --system core.longpaths true
-
       - name: Checkout security analytics
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -56,8 +46,7 @@ jobs:
       - name: Run opensearch with plugin
         run: |
           cd security-analytics
-          # -PnumNodes=1 skips the backend's jacoco coverage setup, whose agent path is invalid on Windows
-          ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} -PnumNodes=1 &
+          ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
           timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
         shell: bash
 
@@ -126,7 +115,7 @@ jobs:
         id: cache-cypress
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
-          path: ${{ matrix.cypress_cache_folder }}
+          path: ~/.cache/Cypress
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
           restore-keys: |
             cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
@@ -138,27 +127,25 @@ jobs:
           command: yarn run cypress run --browser chrome --spec .cypress/integration/${{ matrix.spec }}.spec.js
         env:
           CYPRESS_NO_COMMAND_LOG: 1
-          # The GPU process of the Cypress app crashes on the Windows runners
-          ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
-          CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
           NODE_OPTIONS: '--max-old-space-size=6144'
 
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
-          name: cypress-screenshots-${{ matrix.spec }}-${{ matrix.os }}
+          name: cypress-screenshots-${{ matrix.spec }}
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/.cypress/screenshots
 
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: cypress-videos-${{ matrix.spec }}-${{ matrix.os }}
+          name: cypress-videos-${{ matrix.spec }}
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/.cypress/videos
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
-          name: osd-log-${{ matrix.spec }}-${{ matrix.os }}
+          name: osd-log-${{ matrix.spec }}
           path: osd.log

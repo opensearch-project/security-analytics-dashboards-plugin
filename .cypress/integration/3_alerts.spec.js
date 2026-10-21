@@ -34,6 +34,19 @@ const waitForAlertsReload = () => {
   cy.get('.ouiBasicTable-loading').should('not.exist');
 };
 
+// Clicks "View details" of the first alert, again if the click got ignored because the table was
+// reloading. The flyout is rendered by the click, so it's either open right after it or not at all.
+const openFirstAlertDetails = (attemptsLeft = 5) => {
+  cy.get('.ouiBasicTable-loading').should('not.exist');
+  cy.get('tbody > tr').first().find('[aria-label="View details"]').click({ force: true });
+  cy.get('body').then(($body) => {
+    if (!$body.find('[data-test-subj="alert-details-flyout"]').length && attemptsLeft > 1) {
+      cy.wait(1000);
+      openFirstAlertDetails(attemptsLeft - 1);
+    }
+  });
+};
+
 let testDetector;
 describe('Alerts', () => {
   before(() => {
@@ -101,12 +114,7 @@ describe('Alerts', () => {
   });
 
   it('contain expected values in alert details flyout', () => {
-    cy.get('tbody > tr')
-      .first()
-      .within(() => {
-        // Click the "View details" button for the first alert
-        cy.get('[aria-label="View details"]').click({ force: true });
-      });
+    openFirstAlertDetails();
 
     // Get the details flyout, and validate its content
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
@@ -156,12 +164,7 @@ describe('Alerts', () => {
 
   it('contain expected values in finding details flyout', () => {
     // Open first alert details flyout
-    cy.get('tbody > tr')
-      .first()
-      .within(() => {
-        // Click the "View details" button for the first alert
-        cy.get('[aria-label="View details"]').click({ force: true });
-      });
+    openFirstAlertDetails();
 
     cy.wait(10000);
 
@@ -369,12 +372,11 @@ describe('Alerts', () => {
     });
     waitForAlertsReload();
 
-    cy.get('tbody > tr')
-      .first()
-      .within(() => {
-        // Click the "View details" button for the first alert
-        cy.get('[aria-label="View details"]').click({ force: true });
-      });
+    // Close the status filter, which covers the actions of the first rows
+    cy.get('[data-text="Status"]').click({ force: true });
+    cy.get('[class="euiFilterSelect__items"]').should('not.exist');
+
+    openFirstAlertDetails();
 
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Confirm the alert is currently "Active"
