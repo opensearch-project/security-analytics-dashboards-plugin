@@ -50,7 +50,7 @@ Cypress.Commands.overwrite('visit', (originalFn, url, options) => {
       options = { auth: ADMIN_AUTH };
     }
     // Add query parameters - select the default OSD tenant
-    options.qs = { security_tenant: 'private' };
+    options.qs = { ...options.qs, security_tenant: 'private' };
     return originalFn(url, options);
   } else {
     return originalFn(url, options);
