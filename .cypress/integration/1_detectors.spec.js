@@ -476,15 +476,22 @@ describe('Detectors', () => {
 
       // Turn off all rules. The toggle turns all rules on unless all of them are on already, and a
       // previous test turned one of them off.
-      const toggleAllRules =
-        '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button';
-      cy.get('.ouiBasicTable-loading').should('not.exist');
-      cy.get(toggleAllRules).then(($toggle) => {
-        if ($toggle.attr('aria-checked') !== 'true') {
-          cy.get(toggleAllRules).click({ force: true });
-        }
-      });
-      cy.get(toggleAllRules).should('have.attr', 'aria-checked', 'true').click({ force: true });
+      const rulesTable = '[data-test-subj="edit-detector-rules-table"]';
+      const toggleAllRules = `${rulesTable} table thead tr:first th:first button`;
+      // The toggle has no effect until the rules are listed
+      cy.get(`${rulesTable} tbody tr`).should('have.length.greaterThan', 1);
+      const setAllRules = (active, attemptsLeft = 5) => {
+        cy.get('.ouiBasicTable-loading').should('not.exist');
+        cy.get(toggleAllRules).then(($toggle) => {
+          if ($toggle.attr('aria-checked') !== `${active}` && attemptsLeft > 0) {
+            cy.get(toggleAllRules).click({ force: true });
+            cy.wait(500);
+            setAllRules(active, attemptsLeft - 1);
+          }
+        });
+      };
+      setAllRules(true);
+      setAllRules(false);
       cy.get(toggleAllRules).should('have.attr', 'aria-checked', 'false');
 
       validateFieldMappingsTable('rules are changed');
