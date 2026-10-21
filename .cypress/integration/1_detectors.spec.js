@@ -18,7 +18,8 @@ const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
-const creationFailedMessage = 'Create detector failed.';
+// Creation failures are shown in a toast while the create detector page stays open.
+const creationFailedMessage = 'Failed to create detector';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
@@ -212,9 +213,7 @@ describe('Detectors', () => {
       cy
         .request(
           'POST',
-          `${Cypress.env(
-            'opensearch_url'
-          )}/_plugins/_security_analytics/rules/_search?pre_packaged=true`,
+          `${Cypress.env('opensearch')}/_plugins/_security_analytics/rules/_search?pre_packaged=true`,
           {
             from: 0,
             size: 5000,
@@ -376,7 +375,8 @@ describe('Detectors', () => {
 
     it('...can fail creation', () => {
       createDetector(`${detectorName}_fail`, '.kibana_1', true);
-      cy.getElementByText('.euiCallOut', creationFailedMessage);
+      cy.contains(creationFailedMessage);
+      cy.urlShouldContain('create-detector');
     });
 
     it('...can be created', () => {

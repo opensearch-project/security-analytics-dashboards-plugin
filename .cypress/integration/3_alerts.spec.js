@@ -19,6 +19,21 @@ const alertName = `${detectorName} alert condition`;
 const date = moment(moment.now()).format('MM/DD/YY');
 const docCount = 4;
 
+// The alerts table keeps showing its rows while it reloads, but ignores clicks on them until the
+// reload finishes. Intercept the request with the given query param before the action that reloads
+// the table, and wait for the reload after it.
+const interceptAlertsReload = (queryParam) =>
+  setupIntercept(
+    cy,
+    `/_plugins/_security_analytics/alerts\\?.*${queryParam}=`,
+    'alertsReload',
+    'GET'
+  );
+const waitForAlertsReload = () => {
+  cy.wait('@alertsReload');
+  cy.get('.ouiBasicTable-loading').should('not.exist');
+};
+
 let testDetector;
 describe('Alerts', () => {
   before(() => {
@@ -49,14 +64,17 @@ describe('Alerts', () => {
       contains: 'Security alerts',
     });
 
-    // Filter table to only show alerts for the test detector
-    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
-
     // Adjust the date range picker to display alerts from today
     cy.get('[class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"]').click({
       force: true,
     });
     cy.get('[data-test-subj="superDatePickerCommonlyUsed_Today"]').click({ force: true });
+
+    // Filter table to only show alerts for the test detector. The search is applied after the
+    // date range, so its reload is the last one.
+    interceptAlertsReload('searchString');
+    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
+    waitForAlertsReload();
   });
 
   it('are generated', () => {
@@ -344,10 +362,12 @@ describe('Alerts', () => {
 
   it('can be acknowledged via flyout button', () => {
     // Filter the table to show only "Active" alerts
+    interceptAlertsReload('alertStates');
     cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
     });
+    waitForAlertsReload();
 
     cy.get('tbody > tr')
       .first()

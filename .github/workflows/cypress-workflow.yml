@@ -138,6 +138,8 @@ jobs:
           command: yarn run cypress run --browser chrome --spec .cypress/integration/${{ matrix.spec }}.spec.js
         env:
           CYPRESS_NO_COMMAND_LOG: 1
+          # The GPU process of the Cypress app crashes on the Windows runners
+          ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
           CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
           NODE_OPTIONS: '--max-old-space-size=6144'
 
