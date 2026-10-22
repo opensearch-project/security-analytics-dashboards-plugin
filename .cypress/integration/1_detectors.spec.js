@@ -18,7 +18,8 @@ const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
-const creationFailedMessage = 'Create detector failed.';
+// Creation failures are shown in a toast while the create detector page stays open.
+const creationFailedMessage = 'Failed to create detector';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
@@ -212,9 +213,7 @@ describe('Detectors', () => {
       cy
         .request(
           'POST',
-          `${Cypress.env(
-            'opensearch_url'
-          )}/_plugins/_security_analytics/rules/_search?pre_packaged=true`,
+          `${Cypress.env('opensearch')}/_plugins/_security_analytics/rules/_search?pre_packaged=true`,
           {
             from: 0,
             size: 5000,
@@ -376,7 +375,8 @@ describe('Detectors', () => {
 
     it('...can fail creation', () => {
       createDetector(`${detectorName}_fail`, '.kibana_1', true);
-      cy.getElementByText('.euiCallOut', creationFailedMessage);
+      cy.contains(creationFailedMessage);
+      cy.urlShouldContain('create-detector');
     });
 
     it('...can be created', () => {
@@ -474,10 +474,25 @@ describe('Detectors', () => {
 
       cy.wait('@detectorsSearch');
 
-      // Toggle single search result to unchecked
-      cy.get(
-        '[data-test-subj="edit-detector-rules-table"] table thead tr:first th:first button'
-      ).click({ force: true });
+      // Turn off all rules. The toggle turns all rules on unless all of them are on already, and a
+      // previous test turned one of them off.
+      const rulesTable = '[data-test-subj="edit-detector-rules-table"]';
+      const toggleAllRules = `${rulesTable} table thead tr:first th:first button`;
+      // The toggle has no effect until the rules are listed
+      cy.get(`${rulesTable} tbody tr`).should('have.length.greaterThan', 1);
+      const setAllRules = (active, attemptsLeft = 5) => {
+        cy.get('.ouiBasicTable-loading').should('not.exist');
+        cy.get(toggleAllRules).then(($toggle) => {
+          if ($toggle.attr('aria-checked') !== `${active}` && attemptsLeft > 0) {
+            cy.get(toggleAllRules).click({ force: true });
+            cy.wait(500);
+            setAllRules(active, attemptsLeft - 1);
+          }
+        });
+      };
+      setAllRules(true);
+      setAllRules(false);
+      cy.get(toggleAllRules).should('have.attr', 'aria-checked', 'false');
 
       validateFieldMappingsTable('rules are changed');
     });
