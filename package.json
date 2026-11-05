@@ -28,6 +28,8 @@
     "postinstall": "node -e \"const { execSync } = require('child_process');const { INIT_CWD, PWD = process.cwd() } = process.env; if (INIT_CWD?.startsWith?.(PWD)) {try {execSync('husky install');} catch (e) {}}\""
   },
   "resolutions": {
+    "browserslist": "4.28.7",
+    "baseline-browser-mapping": "2.11.0",
     "ansi-regex": "^5.0.1",
     "brace-expansion": "^5.0.5",
     "tmp": "^0.2.7",
