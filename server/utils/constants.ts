@@ -20,6 +20,7 @@ export const API: SecurityAnalyticsApi = {
   SEARCH_DETECTORS: `${BASE_API_PATH}/detectors/_search`,
   INDICES_BASE: `${BASE_API_PATH}/indices`,
   ALIASES_BASE: `${BASE_API_PATH}/aliases`,
+  DATA_STREAMS_BASE: `${BASE_API_PATH}/data_streams`,
   FINDINGS_BASE: `${BASE_API_PATH}/findings`,
   GET_FINDINGS: `${BASE_API_PATH}/findings/_search`,
   DOCUMENT_IDS_QUERY: `${BASE_API_PATH}/document_ids_query`,
