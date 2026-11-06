@@ -5,6 +5,8 @@
 
 import React from 'react';
 import props from '../../../../../test/mocks/Detectors/containers/Detectors/Detectors.mock';
+import detectorHitMock from '../../../../../test/mocks/Detectors/containers/Detectors/DetectorHit.mock';
+import { DetectorHit } from '../../../../../types';
 import { expect } from '@jest/globals';
 import { act } from '@testing-library/react';
 import { mount } from 'enzyme';
@@ -25,5 +27,75 @@ describe('<Detectors /> spec', () => {
     });
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
+  });
+
+  describe('toggle detector action', () => {
+    const withEnabled = (enabled: boolean) => ({
+      ...detectorHitMock,
+      _source: { ...detectorHitMock._source, enabled },
+    });
+
+    const getToggleAction = (selectedItem: DetectorHit, detectorHits: DetectorHit[]) => {
+      const instance = new Detectors(props);
+      instance.state = { ...instance.state, detectorHits };
+      instance.closeActionsPopover = jest.fn();
+      instance.toggleDetector = jest.fn();
+      const [action] = instance.getActionItems(false, [selectedItem]);
+      return { action, toggleDetector: instance.toggleDetector };
+    };
+
+    it('reflects the refreshed detector state, not the stale selection snapshot', () => {
+      const refreshed = withEnabled(false);
+      const { action, toggleDetector } = getToggleAction(withEnabled(true), [refreshed]);
+      expect(action.props.children).toBe('Start detector');
+
+      action.props.onClick();
+      expect(toggleDetector).toHaveBeenCalledWith(refreshed, true);
+    });
+
+    it('falls back to the selection when the detector is no longer in the list', () => {
+      const selected = withEnabled(true);
+      const { action, toggleDetector } = getToggleAction(selected, []);
+      expect(action.props.children).toBe('Stop detector');
+
+      action.props.onClick();
+      expect(toggleDetector).toHaveBeenCalledWith(selected, false);
+    });
+  });
+});
+
+describe('Access column staleness guard logic', () => {
+  // Direct unit coverage of the guard used in Detectors' render: the Access
+  // column must only trust resourceSharing.types when it was resolved for
+  // the currently selected data source. getResourceSharingAvailableTypes(...)
+  // is awaited in updateResourceSharingAvailableTypes, so on a data-source
+  // switch, resourceSharing.types can still hold the previous data source's
+  // result until the new probe resolves.
+  const computeAvailable = (
+    resourceSharing: { dataSourceId: string | undefined; types: string[] },
+    selectedDataSourceId: string | undefined,
+    resourceType: string
+  ) =>
+    resourceSharing.dataSourceId === selectedDataSourceId &&
+    resourceSharing.types.includes(resourceType);
+
+  it('is available once types resolve for the currently selected data source', () => {
+    const resourceSharing = { dataSourceId: 'ds-a', types: ['detector'] };
+    expect(computeAvailable(resourceSharing, 'ds-a', 'detector')).toBe(true);
+  });
+
+  it('is unavailable while a resolved result belongs to a data source other than the one now selected', () => {
+    const resourceSharing = { dataSourceId: 'ds-a', types: ['detector'] };
+    expect(computeAvailable(resourceSharing, 'ds-b', 'detector')).toBe(false);
+  });
+
+  it('is unavailable before any result has resolved for the currently selected data source', () => {
+    const resourceSharing = { dataSourceId: undefined, types: [] };
+    expect(computeAvailable(resourceSharing, 'ds-a', 'detector')).toBe(false);
+  });
+
+  it('is unavailable once the current data source resolves but does not register the resource type', () => {
+    const resourceSharing = { dataSourceId: 'ds-a', types: ['some-other-type'] };
+    expect(computeAvailable(resourceSharing, 'ds-a', 'detector')).toBe(false);
   });
 });

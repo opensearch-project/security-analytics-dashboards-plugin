@@ -155,17 +155,17 @@ export const UpdateDetectorRules: React.FC<UpdateDetectorRulesProps> = (props) =
     }
   };
 
-  const onAllRulesToggle = async (isActive: boolean) => {
+  const onAllRulesToggle = async (isActive: boolean, ruleItems: RuleItem[]) => {
     setFieldMappingsIsVisible(true);
-    const customRules: RuleItem[] = customRuleItems.map((rule) => ({ ...rule, active: isActive }));
-    const prePackagedRules: RuleItem[] = prePackagedRuleItems.map((rule) => ({
-      ...rule,
-      active: isActive,
-    }));
+    const toggledIds = new Set(ruleItems.map((item) => item.id));
+    const toggle = (rule: RuleItem) =>
+      toggledIds.has(rule.id) ? { ...rule, active: isActive } : rule;
+    const customRules: RuleItem[] = customRuleItems.map(toggle);
+    const prePackagedRules: RuleItem[] = prePackagedRuleItems.map(toggle);
     setCustomRuleItems(customRules);
     setPrePackagedRuleItems(prePackagedRules);
 
-    const enabledRules = prePackagedRules.concat(customRules);
+    const enabledRules = prePackagedRules.concat(customRules).filter((rule) => rule.active);
     await getRuleFieldsForEnabledRules(enabledRules);
   };
 

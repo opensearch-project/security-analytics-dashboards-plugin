@@ -215,6 +215,8 @@ export const ALERT_STATE = Object.freeze({
   DELETED: 'DELETED',
 });
 
+export { MAX_ALERTS_RESULT_WINDOW } from '../../common/constants';
+
 export const logTypesWithDashboards = new Set(['network', 'cloudtrail', 's3']);
 
 export const pendingDashboardCreations: {

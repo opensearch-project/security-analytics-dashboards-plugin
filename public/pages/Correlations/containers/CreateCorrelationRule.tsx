@@ -75,7 +75,7 @@ import {
   parseNotificationChannelsToOptions,
 } from '../../CreateDetector/components/ConfigureAlerts/utils/helpers';
 import { NotificationsCallOut } from '../../../../public/components/NotificationsCallOut';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { PageHeader } from '../../../components/PageHeader/PageHeader';
 
 export interface CreateCorrelationRuleProps extends DataSourceProps {
@@ -367,8 +367,8 @@ export const CreateCorrelationRule: React.FC<CreateCorrelationRuleProps> = (
   };
 
   const submit = async (values: CorrelationRuleModel) => {
-    const randomTriggerId = uuid();
-    const randomActionId = uuid();
+    const randomTriggerId = uuidv4();
+    const randomActionId = uuidv4();
     let error;
     if ((error = validateCorrelationRule(values))) {
       errorNotificationToast(props.notifications, action, 'rule', error);

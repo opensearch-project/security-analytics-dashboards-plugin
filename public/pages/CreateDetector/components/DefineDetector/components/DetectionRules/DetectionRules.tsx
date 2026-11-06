@@ -34,7 +34,7 @@ export interface DetectionRulesProps {
   rulesState: CreateDetectorRulesState;
   loading?: boolean;
   onRuleToggle: (changedItem: RuleItem, isActive: boolean) => void;
-  onAllRulesToggle: (enabled: boolean) => void;
+  onAllRulesToggle: (enabled: boolean, ruleItems: RuleItem[]) => void;
   onPageChange: (page: { index: number; size: number }) => void;
 }
 

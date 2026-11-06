@@ -67,7 +67,7 @@ import { ThreatIntelOverview } from '../ThreatIntel/containers/Overview/ThreatIn
 import { AddThreatIntelSource } from '../ThreatIntel/containers/AddThreatIntelSource/AddThreatIntelSource';
 import { ThreatIntelScanConfigForm } from '../ThreatIntel/containers/ScanConfiguration/ThreatIntelScanConfigForm';
 import { ThreatIntelSource } from '../ThreatIntel/containers/ThreatIntelSource/ThreatIntelSource';
-import { parse } from 'query-string';
+import queryString from 'query-string';
 import {
   dataSourceFilterFn,
   getPlugins,
@@ -158,7 +158,7 @@ export default class Main extends Component<MainProps, MainState> {
       const {
         dataSourceId: parsedDataSourceId,
         dataSourceLabel: parsedDataSourceLabel,
-      } = parse(this.props.location.search, { decode: false }) as {
+      } = queryString.parse(this.props.location.search, { decode: false }) as {
         dataSourceId: string;
         dataSourceLabel: string;
       };

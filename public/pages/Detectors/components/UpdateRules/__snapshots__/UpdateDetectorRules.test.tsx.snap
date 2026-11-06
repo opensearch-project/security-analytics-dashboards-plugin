@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`<UpdateDetectorRules /> spec renders the component 1`] = `
 Object {
@@ -193,7 +193,7 @@ Object {
                                   class="euiSwitch euiSwitch--primary euiSwitch--compressed"
                                 >
                                   <button
-                                    aria-checked="true"
+                                    aria-checked="false"
                                     aria-label=""
                                     class="euiSwitch__button"
                                     id="some_html_id"
@@ -572,7 +572,7 @@ Object {
                                 class="euiSwitch euiSwitch--primary euiSwitch--compressed"
                               >
                                 <button
-                                  aria-checked="true"
+                                  aria-checked="false"
                                   aria-label=""
                                   class="euiSwitch__button"
                                   id="some_html_id"

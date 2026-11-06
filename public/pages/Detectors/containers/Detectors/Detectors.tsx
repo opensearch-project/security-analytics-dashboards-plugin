@@ -34,6 +34,10 @@ import {
 } from '../../../../utils/helpers';
 import { FieldValueSelectionFilterConfigType } from '@elastic/eui/src/components/search_bar/filters/field_value_selection_filter';
 import { DetectorsService } from '../../../../services';
+import {
+  getResourceSharingAvailableTypes,
+  SA_DETECTOR_RESOURCE_TYPE,
+} from '../../../../services/utils/resource_sharing';
 import { DetectorHit } from '../../../../../server/models/interfaces';
 import { NotificationsStart } from 'opensearch-dashboards/public';
 import { Direction } from '@opensearch-project/oui/src/services/sort/sort_direction';
@@ -52,6 +56,7 @@ interface DetectorsState {
   selectedItems: DetectorHit[];
   isDeleteModalVisible: boolean;
   isPopoverOpen: boolean;
+  resourceSharing: { dataSourceId: string | undefined; types: string[] };
 }
 
 export default class Detectors extends Component<DetectorsProps, DetectorsState> {
@@ -64,11 +69,13 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       selectedItems: [],
       isDeleteModalVisible: false,
       isPopoverOpen: false,
+      resourceSharing: { dataSourceId: undefined, types: [] },
     };
   }
 
   async componentDidMount() {
     setBreadcrumbs([BREADCRUMBS.DETECTORS]);
+    this.updateResourceSharingAvailableTypes();
     await this.getDetectors();
   }
 
@@ -78,9 +85,22 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
     snapshot?: any
   ): void {
     if (this.props.dataSource && prevProps.dataSource !== this.props.dataSource) {
+      this.updateResourceSharingAvailableTypes();
       this.getDetectors();
     }
   }
+
+  updateResourceSharingAvailableTypes = async () => {
+    // Capture which data source this probe is for so a late-resolving call
+    // (e.g. from a data source the user has since switched away from) can't
+    // overwrite state with a result that no longer matches the current
+    // selection.
+    const requestedDataSourceId = this.props.dataSource?.id;
+    const types = await getResourceSharingAvailableTypes(requestedDataSourceId);
+    if (requestedDataSourceId === this.props.dataSource?.id) {
+      this.setState({ resourceSharing: { dataSourceId: requestedDataSourceId, types } });
+    }
+  };
 
   getDetectors = async () => {
     this.setState({ loadingDetectors: true });
@@ -134,11 +154,6 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       errorNotificationToast(notifications, 'update', 'detector', e);
     }
     await this.getDetectors();
-    const selectedItemIds = new Set(this.state.selectedItems.map(({ _id }) => _id));
-    const updatedSelectedItems: DetectorHit[] = this.state.detectorHits.filter((hit) =>
-      selectedItemIds.has(hit._id)
-    );
-    this.setState({ loadingDetectors: false, selectedItems: updatedSelectedItems });
   };
 
   onClickDelete = async () => {
@@ -188,18 +203,22 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   getActionItems = (loading: boolean, selectedItems: DetectorHit[]) => {
     const actionItems = [];
     if (selectedItems.length === 1) {
+      // Selected items are snapshots taken when the row was checked; read the
+      // refreshed hit so the toggle reflects the detector's current state.
+      const detector =
+        this.state.detectorHits.find(({ _id }) => _id === selectedItems[0]._id) || selectedItems[0];
       actionItems.push(
         <EuiContextMenuItem
           key={'ToggleDetector'}
           icon={'empty'}
-          disabled={selectedItems.length !== 1 || loading}
+          disabled={loading}
           onClick={() => {
             this.closeActionsPopover();
-            this.toggleDetector(selectedItems[0], !selectedItems[0]._source.enabled);
+            this.toggleDetector(detector, !detector._source.enabled);
           }}
           data-test-subj={'toggleDetectorButton'}
         >
-          {`${selectedItems[0]?._source.enabled ? 'Stop' : 'Start'} detector`}
+          {`${detector._source.enabled ? 'Stop' : 'Start'} detector`}
         </EuiContextMenuItem>
       );
     }
@@ -228,6 +247,13 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         Create detector
       </EuiSmallButton>,
     ];
+
+    // Guard against a stale value flashing the column during a data-source
+    // switch: only trust availability resolved for the currently selected
+    // data source (see updateResourceSharingAvailableTypes).
+    const resourceSharingAvailable =
+      this.state.resourceSharing.dataSourceId === this.props.dataSource?.id &&
+      this.state.resourceSharing.types.includes(SA_DETECTOR_RESOURCE_TYPE);
 
     const columns: EuiBasicTableColumn<DetectorHit>[] = [
       {
@@ -267,6 +293,29 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
         dataType: 'date',
         render: (last_update_time: number) => renderTime(last_update_time) || DEFAULT_EMPTY_DATA,
       },
+      ...(resourceSharingAvailable
+        ? [
+            {
+              // Resource-sharing SPI marker column: the centralized Share
+              // button is mounted here by security-dashboards-plugin when
+              // installed and resource sharing is enabled for detectors.
+              field: '_id',
+              name: 'Access',
+              sortable: false,
+              width: '5%',
+              render: (id: string, item: DetectorHit) =>
+                id && resourceSharingAvailable ? (
+                  <div
+                    data-resource-share-button
+                    data-resource-id={id}
+                    data-resource-type={SA_DETECTOR_RESOURCE_TYPE}
+                    {...(item?.detectorName ? { 'data-resource-name': item.detectorName } : {})}
+                    data-resource-share-display="icon"
+                  />
+                ) : null,
+            } as EuiBasicTableColumn<DetectorHit>,
+          ]
+        : []),
     ];
 
     const statuses = [
@@ -405,6 +454,7 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
               items={detectorHits}
               itemId={(item: DetectorHit) => `${item._id}`}
               columns={columns}
+              tableLayout="auto"
               pagination={true}
               sorting={sorting}
               isSelectable={true}

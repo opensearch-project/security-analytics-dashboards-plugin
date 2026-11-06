@@ -8,22 +8,22 @@ on:
       - '*'
 env:
   OPENSEARCH_DASHBOARDS_VERSION: 'main'
-  OPENSEARCH_VERSION: '3.1.0-SNAPSHOT'
+  OPENSEARCH_VERSION: '3.9.0-SNAPSHOT'
   SECURITY_ANALYTICS_BRANCH: 'main'
   GRADLE_VERSION: '7.6.1'
 jobs:
   tests:
-    name: Run Cypress E2E tests
+    name: Run ${{ matrix.spec }} Cypress tests
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-          - os: windows-latest
-            cypress_cache_folder: ~/AppData/Local/Cypress/Cache
-          - os: ubuntu-latest
-            cypress_cache_folder: ~/.cache/Cypress
-    runs-on: ${{ matrix.os }}
+        # Running each spec separately due to cypress memory-related renderer crashes
+        spec:
+          - 1_detectors
+          - 2_rules
+          - 3_alerts
+          - 4_findings
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -31,17 +31,13 @@ jobs:
       TERM: xterm
     steps:
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@b6e674f4b717d7b0ae3baee0fbe79f498905dfde # v1
         with:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
           java-version: 21
 
-      - name: Enable longer filenames
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: git config --system core.longpaths true
-
       - name: Checkout security analytics
-        uses: actions/checkout@v2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: security-analytics
           repository: opensearch-project/security-analytics
@@ -51,23 +47,23 @@ jobs:
         run: |
           cd security-analytics
           ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
-          sleep 300
+          timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
         shell: bash
 
       - name: Checkout OpenSearch-Dashboards
-        uses: actions/checkout@v2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: opensearch-project/OpenSearch-Dashboards
           path: OpenSearch-Dashboards
           ref: ${{ env.OPENSEARCH_DASHBOARDS_VERSION }}
 
       - name: Checkout Security Analytics Dashboards plugin
-        uses: actions/checkout@v2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           node-version-file: './OpenSearch-Dashboards/.nvmrc'
           registry-url: 'https://registry.npmjs.org'
@@ -87,21 +83,18 @@ jobs:
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           yarn osd bootstrap --single-version=loose
 
+      - name: Build plugin bundles
+        run: |
+          cd OpenSearch-Dashboards
+          node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers 4
+        shell: bash
+
       - name: Run OpenSearch-Dashboards server
         run: |
           cd OpenSearch-Dashboards
-          yarn start --no-base-path --no-watch --server.host="0.0.0.0" &
-        shell: bash
-
-      # Window is slow so wait longer
-      - name: Sleep until OSD server starts - windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: Start-Sleep -s 450
-        shell: powershell
-
-      - name: Sleep until OSD server starts - non-windows
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: sleep 450
+          yarn start --no-base-path --no-watch --server.host="0.0.0.0" > ../osd.log 2>&1 &
+          timeout 600 bash -c 'while ! grep -qE "(bundles compiled successfully|all bundles cached)" ../osd.log 2>/dev/null; do sleep 10; done'
+          timeout 300 bash -c 'until curl -s -o /dev/null localhost:5601; do sleep 5; done'
         shell: bash
 
       - name: Install Cypress
@@ -120,35 +113,39 @@ jobs:
 
       - name: Cache Cypress
         id: cache-cypress
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
-          path: ${{ matrix.cypress_cache_folder }}
+          path: ~/.cache/Cypress
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
           restore-keys: |
             cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
-      # for now just chrome, use matrix to do all browsers later
       - name: Cypress tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
         with:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          command: yarn run cypress run --browser firefox
-          wait-on: 'http://localhost:5601'
-          wait-on-timeout: 300
-          browser: firefox
+          command: yarn run cypress run --browser chrome --spec .cypress/integration/${{ matrix.spec }}.spec.js
         env:
-          CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
+          CYPRESS_NO_COMMAND_LOG: 1
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+          NODE_OPTIONS: '--max-old-space-size=6144'
 
       # Screenshots are only captured on failure, will change this once we do visual regression tests
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
-          name: cypress-screenshots-${{ matrix.os }}
-          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/screenshots
+          name: cypress-screenshots-${{ matrix.spec }}
+          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/.cypress/screenshots
 
       # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: cypress-videos-${{ matrix.os }}
-          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/videos
+          name: cypress-videos-${{ matrix.spec }}
+          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/.cypress/videos
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: failure()
+        with:
+          name: osd-log-${{ matrix.spec }}
+          path: osd.log

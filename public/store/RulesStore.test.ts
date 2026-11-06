@@ -38,7 +38,7 @@ describe('Rules store specs', () => {
     await DataStore.rules.getPrePackagedRules();
 
     // service.getRules is called only once as the second time is returned from the cache
-    expect(serviceSpy).toBeCalledTimes(1);
+    expect(serviceSpy).toHaveBeenCalledTimes(1);
   });
 
   it('getAllRules should call getRules', async () => {
@@ -48,6 +48,6 @@ describe('Rules store specs', () => {
 
     await DataStore.rules.getAllRules();
 
-    expect(getRulesSpy).toBeCalledTimes(2);
+    expect(getRulesSpy).toHaveBeenCalledTimes(2);
   });
 });
