@@ -14,10 +14,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import { TableWidget } from './TableWidget';
 import { WidgetContainer } from './WidgetContainer';
-import { getEuiEmptyPrompt, renderTime } from '../../../../utils/helpers';
+import { getEuiEmptyPrompt, renderIoCType, renderTime } from '../../../../utils/helpers';
 import { ThreatIntelFinding } from '../../../../../types';
 import { getApplication, getUseUpdatedUx } from '../../../../services/utils/constants';
-import { renderIoCType } from '../../../../utils/helpers';
 
 const columns: EuiBasicTableColumn<ThreatIntelFinding>[] = [
   {
