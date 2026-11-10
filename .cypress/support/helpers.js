@@ -63,7 +63,12 @@ Cypress.Commands.add(
     }
     Cypress.log({ message: `Select combobox items: ${items.join(' | ')}` });
     items.map((item) => {
-      cy.wrap(subject).type(item + '{downarrow}{enter}');
+      cy.wrap(subject).type(item);
+      // Click the first matching option. Pressing enter selects nothing if it comes before the
+      // options are listed, while the field still shows the typed text.
+      cy.get('[data-test-subj*="comboBoxOptionsList"]')
+        .contains('[role="option"]', item, { matchCase: false })
+        .click({ force: true });
     });
   }
 );

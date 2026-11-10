@@ -193,7 +193,7 @@ Object {
                                   class="euiSwitch euiSwitch--primary euiSwitch--compressed"
                                 >
                                   <button
-                                    aria-checked="true"
+                                    aria-checked="false"
                                     aria-label=""
                                     class="euiSwitch__button"
                                     id="some_html_id"
@@ -572,7 +572,7 @@ Object {
                                 class="euiSwitch euiSwitch--primary euiSwitch--compressed"
                               >
                                 <button
-                                  aria-checked="true"
+                                  aria-checked="false"
                                   aria-label=""
                                   class="euiSwitch__button"
                                   id="some_html_id"

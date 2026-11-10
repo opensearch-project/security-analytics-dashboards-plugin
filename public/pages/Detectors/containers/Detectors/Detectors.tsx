@@ -154,11 +154,6 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
       errorNotificationToast(notifications, 'update', 'detector', e);
     }
     await this.getDetectors();
-    const selectedItemIds = new Set(this.state.selectedItems.map(({ _id }) => _id));
-    const updatedSelectedItems: DetectorHit[] = this.state.detectorHits.filter((hit) =>
-      selectedItemIds.has(hit._id)
-    );
-    this.setState({ loadingDetectors: false, selectedItems: updatedSelectedItems });
   };
 
   onClickDelete = async () => {
@@ -208,18 +203,22 @@ export default class Detectors extends Component<DetectorsProps, DetectorsState>
   getActionItems = (loading: boolean, selectedItems: DetectorHit[]) => {
     const actionItems = [];
     if (selectedItems.length === 1) {
+      // Selected items are snapshots taken when the row was checked; read the
+      // refreshed hit so the toggle reflects the detector's current state.
+      const detector =
+        this.state.detectorHits.find(({ _id }) => _id === selectedItems[0]._id) || selectedItems[0];
       actionItems.push(
         <EuiContextMenuItem
           key={'ToggleDetector'}
           icon={'empty'}
-          disabled={selectedItems.length !== 1 || loading}
+          disabled={loading}
           onClick={() => {
             this.closeActionsPopover();
-            this.toggleDetector(selectedItems[0], !selectedItems[0]._source.enabled);
+            this.toggleDetector(detector, !detector._source.enabled);
           }}
           data-test-subj={'toggleDetectorButton'}
         >
-          {`${selectedItems[0]?._source.enabled ? 'Stop' : 'Start'} detector`}
+          {`${detector._source.enabled ? 'Stop' : 'Start'} detector`}
         </EuiContextMenuItem>
       );
     }

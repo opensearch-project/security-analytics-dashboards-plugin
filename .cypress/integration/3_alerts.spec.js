@@ -19,6 +19,34 @@ const alertName = `${detectorName} alert condition`;
 const date = moment(moment.now()).format('MM/DD/YY');
 const docCount = 4;
 
+// The alerts table keeps showing its rows while it reloads, but ignores clicks on them until the
+// reload finishes. Intercept the request with the given query param before the action that reloads
+// the table, and wait for the reload after it.
+const interceptAlertsReload = (queryParam) =>
+  setupIntercept(
+    cy,
+    `/_plugins/_security_analytics/alerts\\?.*${queryParam}=`,
+    'alertsReload',
+    'GET'
+  );
+const waitForAlertsReload = () => {
+  cy.wait('@alertsReload');
+  cy.get('.ouiBasicTable-loading').should('not.exist');
+};
+
+// Clicks "View details" of the first alert, again if the click got ignored because the table was
+// reloading. The flyout is rendered by the click, so it's either open right after it or not at all.
+const openFirstAlertDetails = (attemptsLeft = 5) => {
+  cy.get('.ouiBasicTable-loading').should('not.exist');
+  cy.get('tbody > tr').first().find('[aria-label="View details"]').click({ force: true });
+  cy.get('body').then(($body) => {
+    if (!$body.find('[data-test-subj="alert-details-flyout"]').length && attemptsLeft > 1) {
+      cy.wait(1000);
+      openFirstAlertDetails(attemptsLeft - 1);
+    }
+  });
+};
+
 let testDetector;
 describe('Alerts', () => {
   before(() => {
@@ -49,14 +77,17 @@ describe('Alerts', () => {
       contains: 'Security alerts',
     });
 
-    // Filter table to only show alerts for the test detector
-    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
-
     // Adjust the date range picker to display alerts from today
     cy.get('[class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"]').click({
       force: true,
     });
     cy.get('[data-test-subj="superDatePickerCommonlyUsed_Today"]').click({ force: true });
+
+    // Filter table to only show alerts for the test detector. The search is applied after the
+    // date range, so its reload is the last one.
+    interceptAlertsReload('searchString');
+    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
+    waitForAlertsReload();
   });
 
   it('are generated', () => {
@@ -83,12 +114,7 @@ describe('Alerts', () => {
   });
 
   it('contain expected values in alert details flyout', () => {
-    cy.get('tbody > tr')
-      .first()
-      .within(() => {
-        // Click the "View details" button for the first alert
-        cy.get('[aria-label="View details"]').click({ force: true });
-      });
+    openFirstAlertDetails();
 
     // Get the details flyout, and validate its content
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
@@ -138,12 +164,7 @@ describe('Alerts', () => {
 
   it('contain expected values in finding details flyout', () => {
     // Open first alert details flyout
-    cy.get('tbody > tr')
-      .first()
-      .within(() => {
-        // Click the "View details" button for the first alert
-        cy.get('[aria-label="View details"]').click({ force: true });
-      });
+    openFirstAlertDetails();
 
     cy.wait(10000);
 
@@ -344,17 +365,18 @@ describe('Alerts', () => {
 
   it('can be acknowledged via flyout button', () => {
     // Filter the table to show only "Active" alerts
+    interceptAlertsReload('alertStates');
     cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
     });
+    waitForAlertsReload();
 
-    cy.get('tbody > tr')
-      .first()
-      .within(() => {
-        // Click the "View details" button for the first alert
-        cy.get('[aria-label="View details"]').click({ force: true });
-      });
+    // Close the status filter, which covers the actions of the first rows
+    cy.get('[data-text="Status"]').click({ force: true });
+    cy.get('[class="euiFilterSelect__items"]').should('not.exist');
+
+    openFirstAlertDetails();
 
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Confirm the alert is currently "Active"

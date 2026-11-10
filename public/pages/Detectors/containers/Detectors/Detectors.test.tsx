@@ -5,6 +5,8 @@
 
 import React from 'react';
 import props from '../../../../../test/mocks/Detectors/containers/Detectors/Detectors.mock';
+import detectorHitMock from '../../../../../test/mocks/Detectors/containers/Detectors/DetectorHit.mock';
+import { DetectorHit } from '../../../../../types';
 import { expect } from '@jest/globals';
 import { act } from '@testing-library/react';
 import { mount } from 'enzyme';
@@ -25,6 +27,40 @@ describe('<Detectors /> spec', () => {
     });
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
+  });
+
+  describe('toggle detector action', () => {
+    const withEnabled = (enabled: boolean) => ({
+      ...detectorHitMock,
+      _source: { ...detectorHitMock._source, enabled },
+    });
+
+    const getToggleAction = (selectedItem: DetectorHit, detectorHits: DetectorHit[]) => {
+      const instance = new Detectors(props);
+      instance.state = { ...instance.state, detectorHits };
+      instance.closeActionsPopover = jest.fn();
+      instance.toggleDetector = jest.fn();
+      const [action] = instance.getActionItems(false, [selectedItem]);
+      return { action, toggleDetector: instance.toggleDetector };
+    };
+
+    it('reflects the refreshed detector state, not the stale selection snapshot', () => {
+      const refreshed = withEnabled(false);
+      const { action, toggleDetector } = getToggleAction(withEnabled(true), [refreshed]);
+      expect(action.props.children).toBe('Start detector');
+
+      action.props.onClick();
+      expect(toggleDetector).toHaveBeenCalledWith(refreshed, true);
+    });
+
+    it('falls back to the selection when the detector is no longer in the list', () => {
+      const selected = withEnabled(true);
+      const { action, toggleDetector } = getToggleAction(selected, []);
+      expect(action.props.children).toBe('Stop detector');
+
+      action.props.onClick();
+      expect(toggleDetector).toHaveBeenCalledWith(selected, false);
+    });
   });
 });
 

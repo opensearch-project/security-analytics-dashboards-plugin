@@ -13,17 +13,17 @@ env:
   GRADLE_VERSION: '7.6.1'
 jobs:
   tests:
-    name: Run Cypress E2E tests
+    name: Run ${{ matrix.spec }} Cypress tests
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-          - os: windows-latest
-            cypress_cache_folder: ~/AppData/Local/Cypress/Cache
-          - os: ubuntu-latest
-            cypress_cache_folder: ~/.cache/Cypress
-    runs-on: ${{ matrix.os }}
+        # Running each spec separately due to cypress memory-related renderer crashes
+        spec:
+          - 1_detectors
+          - 2_rules
+          - 3_alerts
+          - 4_findings
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -36,10 +36,6 @@ jobs:
           # TODO: Parse this from security analytics plugin (https://github.com/opensearch-project/security-analytics/issues/170)
           java-version: 21
 
-      - name: Enable longer filenames
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: git config --system core.longpaths true
-
       - name: Checkout security analytics
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -51,7 +47,7 @@ jobs:
         run: |
           cd security-analytics
           ./gradlew run -Dopensearch.version=${{ env.OPENSEARCH_VERSION }} &
-          sleep 300
+          timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
         shell: bash
 
       - name: Checkout OpenSearch-Dashboards
@@ -87,21 +83,18 @@ jobs:
           cd OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
           yarn osd bootstrap --single-version=loose
 
+      - name: Build plugin bundles
+        run: |
+          cd OpenSearch-Dashboards
+          node scripts/build_opensearch_dashboards_platform_plugins --no-examples --workers 4
+        shell: bash
+
       - name: Run OpenSearch-Dashboards server
         run: |
           cd OpenSearch-Dashboards
-          yarn start --no-base-path --no-watch --server.host="0.0.0.0" &
-        shell: bash
-
-      # Window is slow so wait longer
-      - name: Sleep until OSD server starts - windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: Start-Sleep -s 450
-        shell: powershell
-
-      - name: Sleep until OSD server starts - non-windows
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: sleep 450
+          yarn start --no-base-path --no-watch --server.host="0.0.0.0" > ../osd.log 2>&1 &
+          timeout 600 bash -c 'while ! grep -qE "(bundles compiled successfully|all bundles cached)" ../osd.log 2>/dev/null; do sleep 10; done'
+          timeout 300 bash -c 'until curl -s -o /dev/null localhost:5601; do sleep 5; done'
         shell: bash
 
       - name: Install Cypress
@@ -122,37 +115,37 @@ jobs:
         id: cache-cypress
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
-          path: ${{ matrix.cypress_cache_folder }}
+          path: ~/.cache/Cypress
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
           restore-keys: |
             cypress-cache-v2-${{ runner.os }}-${{ hashFiles('OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/package.json') }}
 
-      # System Firefox on the runner has drifted to a version far newer than what
-      # Cypress 13.x can drive via CDP ("Failed to spawn CDP with Firefox" / ENOENT
-      # on shield-preference-experiments.json). Electron ships bundled with the
-      # Cypress binary itself and is version-matched to it, so it has no
-      # system-browser-version dependency.
       - name: Cypress tests
         uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
         with:
           working-directory: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin
-          command: yarn run cypress run --browser electron
-          wait-on: 'http://localhost:5601'
-          wait-on-timeout: 300
-          browser: electron
+          command: yarn run cypress run --browser chrome --spec .cypress/integration/${{ matrix.spec }}.spec.js
         env:
-          CYPRESS_CACHE_FOLDER: ${{ matrix.cypress_cache_folder }}
+          CYPRESS_NO_COMMAND_LOG: 1
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+          NODE_OPTIONS: '--max-old-space-size=6144'
 
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
-          name: cypress-screenshots-${{ matrix.os }}
-          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/screenshots
+          name: cypress-screenshots-${{ matrix.spec }}
+          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/.cypress/screenshots
 
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: cypress-videos-${{ matrix.os }}
-          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/cypress/videos
+          name: cypress-videos-${{ matrix.spec }}
+          path: OpenSearch-Dashboards/plugins/security-analytics-dashboards-plugin/.cypress/videos
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: failure()
+        with:
+          name: osd-log-${{ matrix.spec }}
+          path: osd.log
