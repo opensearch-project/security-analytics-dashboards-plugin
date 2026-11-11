@@ -10,7 +10,11 @@ import {
   ResponseError,
   RequestHandlerContext,
 } from 'opensearch-dashboards/server';
-import { GetAliasesResponse, GetIndicesResponse } from '../models/interfaces';
+import {
+  GetAliasesResponse,
+  GetDataStreamsResponse,
+  GetIndicesResponse,
+} from '../models/interfaces';
 import { ServerResponse } from '../models/types';
 import { MDSEnabledClientService } from './MDSEnabledClientService';
 
@@ -107,6 +111,45 @@ export default class IndexService extends MDSEnabledClientService {
         body: {
           ok: false,
           error: err.message,
+        },
+      });
+    }
+  };
+
+  getDataStreams = async (
+    context: RequestHandlerContext,
+    request: OpenSearchDashboardsRequest,
+    response: OpenSearchDashboardsResponseFactory
+  ): Promise<
+    IOpenSearchDashboardsResponse<ServerResponse<GetDataStreamsResponse> | ResponseError>
+  > => {
+    try {
+      const client = this.getClient(request, context);
+      const getDataStreamsResponse = await client('transport.request', {
+        method: 'GET',
+        path: '/_data_stream',
+      });
+      const dataStreamsResponseBody = getDataStreamsResponse?.body || getDataStreamsResponse;
+      const dataStreams = (dataStreamsResponseBody?.data_streams || [])
+        .map((dataStream: { name?: string }) => dataStream.name)
+        .filter((name: string | undefined): name is string => Boolean(name))
+        .map((name: string) => ({ name }));
+
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: true,
+          response: {
+            dataStreams,
+          },
+        },
+      });
+    } catch (error: any) {
+      return response.custom({
+        statusCode: 200,
+        body: {
+          ok: false,
+          error: error.message,
         },
       });
     }

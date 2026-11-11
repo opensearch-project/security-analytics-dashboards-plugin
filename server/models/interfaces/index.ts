@@ -24,6 +24,7 @@ export interface SecurityAnalyticsApi {
   readonly SEARCH_DETECTORS: string;
   readonly INDICES_BASE: string;
   readonly ALIASES_BASE: string;
+  readonly DATA_STREAMS_BASE: string;
   readonly FINDINGS_BASE: string;
   readonly GET_FINDINGS: string;
   readonly DOCUMENT_IDS_QUERY: string;
@@ -68,6 +69,10 @@ export interface GetAliasesResponse {
   aliases: CatAlias[];
 }
 
+export interface GetDataStreamsResponse {
+  dataStreams: DataStream[];
+}
+
 // Default _cat index response
 export interface CatIndex {
   'docs.count': string;
@@ -86,6 +91,10 @@ export interface CatIndex {
 export interface CatAlias {
   alias: string;
   index: string;
+}
+
+export interface DataStream {
+  name: string;
 }
 
 export interface SearchResponse<T> {
