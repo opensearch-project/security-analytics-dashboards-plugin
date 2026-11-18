@@ -32,6 +32,16 @@ export function setupIndexRoutes(services: NodeServices, router: IRouter) {
     indexService.getAliases
   );
 
+  router.get(
+    {
+      path: API.DATA_STREAMS_BASE,
+      validate: {
+        query: createQueryValidationSchema(),
+      },
+    },
+    indexService.getDataStreams
+  );
+
   router.post(
     {
       path: `${API.INDICES_BASE}`,

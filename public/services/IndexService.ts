@@ -5,7 +5,11 @@
 
 import { HttpSetup } from 'opensearch-dashboards/public';
 import { ServerResponse } from '../../server/models/types';
-import { GetAliasesResponse, GetIndicesResponse } from '../../server/models/interfaces';
+import {
+  GetAliasesResponse,
+  GetDataStreamsResponse,
+  GetIndicesResponse,
+} from '../../server/models/interfaces';
 import { API } from '../../server/utils/constants';
 import { IIndexService } from '../../types';
 import { dataSourceInfo } from './utils/constants';
@@ -49,6 +53,15 @@ export default class IndexService implements IIndexService {
     })) as ServerResponse<GetAliasesResponse>;
 
     return response;
+  };
+
+  getDataStreams = async (): Promise<ServerResponse<GetDataStreamsResponse>> => {
+    const url = `..${API.DATA_STREAMS_BASE}`;
+    return (await this.httpClient.get(url, {
+      query: {
+        dataSourceId: dataSourceInfo.activeDataSource.id,
+      },
+    })) as ServerResponse<GetDataStreamsResponse>;
   };
 
   updateAliases = async (actions: any): Promise<ServerResponse<{}>> => {
