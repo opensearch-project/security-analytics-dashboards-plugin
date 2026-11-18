@@ -4,6 +4,7 @@
     "tsconfig.json",
     "yarn.lock",
     ".yarnrc",
+    "scripts/extract_zip_shim/**",
     "{lib,public,server,webpackShims,translations,utils,models,test,common,types}/**/*",
     "!__tests__",
     "config.ts"
