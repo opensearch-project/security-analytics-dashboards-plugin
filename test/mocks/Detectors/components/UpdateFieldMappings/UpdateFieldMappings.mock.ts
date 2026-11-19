@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import detectorHitMock from '../../containers/Detectors/DetectorHit.mock';
 import notificationsStartMock from '../../../services/notifications/NotificationsStart.mock';
 import browserHistoryMock from '../../../services/browserHistory.mock';
