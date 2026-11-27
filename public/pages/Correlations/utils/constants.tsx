@@ -33,16 +33,25 @@ export const graphRenderOptions = {
   height: '800px',
   width: '100%',
   physics: {
+    enabled: true,
+    barnesHut: {
+      gravitationalConstant: -7000,
+      centralGravity: 0.5,
+      springConstant: 0.01,
+      springLength: 125,
+      damping: 0.1,
+    },
     stabilization: {
+      enabled: true,
       fit: true,
-      iterations: 1000,
+      iterations: 1500,
     },
   },
   interaction: {
     zoomView: true,
     zoomSpeed: 0.2,
     dragView: true,
-    dragNodes: false,
+    dragNodes: true,
     multiselect: true,
     tooltipDelay: 50,
     hover: true,
